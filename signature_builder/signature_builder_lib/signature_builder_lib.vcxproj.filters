@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="crypto">
+      <UniqueIdentifier>{238d3740-95cd-4071-b5cb-3339ac806416}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="filesys">
+      <UniqueIdentifier>{9ba2110a-34e2-4262-85cc-0d15d3d0b431}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="output">
+      <UniqueIdentifier>{1922a923-8161-4e37-8b6e-21553482c722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threading">
+      <UniqueIdentifier>{2b169229-3a7a-4515-acec-e82891227be1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="file_iterator.h">
+      <Filter>filesys</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="file_iterator.cpp">
+      <Filter>filesys</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
