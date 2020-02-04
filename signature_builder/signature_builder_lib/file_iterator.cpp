@@ -9,7 +9,7 @@
 // TODO: Так-ли нужно юзать CRT, может все-таки STL?
 // TODO: fopen еще и варнинги кидает!
 
-namespace filesys
+namespace builder::filesys
 {
     void FileIterator::incrementChunk()
     {

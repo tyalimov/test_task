@@ -5,8 +5,8 @@
 
 #include <vector>
 
-using utils::Path;
-using filesys::FileIterator;
+using builder::utils::Path;
+using builder::filesys::FileIterator;
 
 using ChunkList = std::vector<FileIterator::BinaryBufferPtr>;
 
@@ -104,6 +104,7 @@ TEST(file_iterator, Unpadded_Read_Single_Chunk)
     TestEqual(chunks, expected, chunk_size);
 }
 
+// We don't need to do padding, because it will be done by crypto library
 TEST(file_iterator, Unpadded_Read_Multiple_Chunks) 
 {
     ChunkList chunks;
@@ -116,13 +117,14 @@ TEST(file_iterator, Unpadded_Read_Multiple_Chunks)
         "abcdefghij",
         "0123456789",
         "abcdefghij",
-        "1111111\0\0\0"
+        "1111111"
     };
 
     GetChunks(path, chunk_size, chunks);
     TestEqual(chunks, expected, chunk_size);
 }
 
+// We don't need to do padding, because it will be done by crypto library
 TEST(file_iterator, Read_Zero_Bytes) 
 {
     ChunkList chunks;

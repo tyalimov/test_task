@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 
-namespace filesys
+namespace builder::filesys
 {
     class FileIterator
     {
