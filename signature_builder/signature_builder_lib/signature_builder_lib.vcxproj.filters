@@ -13,16 +13,27 @@
     <Filter Include="threading">
       <UniqueIdentifier>{2b169229-3a7a-4515-acec-e82891227be1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="misc">
+      <UniqueIdentifier>{80987201-7dcb-405e-ae00-9bd38bce3187}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils.h" />
     <ClInclude Include="file_iterator.h">
       <Filter>filesys</Filter>
+    </ClInclude>
+    <ClInclude Include="sha512.h">
+      <Filter>crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="file_iterator.cpp">
       <Filter>filesys</Filter>
+    </ClCompile>
+    <ClCompile Include="sha512.cpp">
+      <Filter>crypto</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
