@@ -2,7 +2,6 @@
 
 #include "file_iterator.h"
 
-#include <string>
 #include <vector>
 #include <memory>
 #include <mutex>

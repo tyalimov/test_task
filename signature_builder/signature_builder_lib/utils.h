@@ -2,7 +2,6 @@
 
 #include <filesystem>
 #include <vector>
-#include <array>
 #include <memory>
 
 #define SHA512_DIGEST_SIZE 64
