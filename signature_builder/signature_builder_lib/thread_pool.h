@@ -18,7 +18,7 @@ namespace builder::threading
         std::vector<std::thread>                   m_workers;
         std::shared_ptr<std::mutex>                m_file_iterator_mutex;
         std::shared_ptr<filesys::FileIterator>     m_file_iterator;
-        std::shared_ptr<std::vector<std::string>>  m_hashes;
+        std::shared_ptr<std::vector<utils::BinaryBufferPtr>>  m_hashes;
 
         void initialize();
         void createWorkers();

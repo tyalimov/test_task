@@ -4,9 +4,9 @@ namespace builder::threading
 {
     WorkerThread::WorkerThread
     (
-        const std::shared_ptr<std::mutex>&               file_iterator_mutex,
-        const std::shared_ptr<filesys::FileIterator>&    file_iterator,
-        const std::shared_ptr<std::vector<std::string>>& hashes
+        const std::shared_ptr<std::mutex>&                          file_iterator_mutex,
+        const std::shared_ptr<filesys::FileIterator>&               file_iterator,
+        const std::shared_ptr<std::vector<utils::BinaryBufferPtr>>& hashes
     )
         : m_file_iterator_mutex(file_iterator_mutex)
         , m_file_iterator(file_iterator)
@@ -23,11 +23,13 @@ namespace builder::threading
         // Повторить
     }
 
+
+    // TODO: Плохое название
     void WorkerThreadFunction
     (
-        const std::shared_ptr<std::mutex>&               file_iterator_mutex,
-        const std::shared_ptr<filesys::FileIterator>&    file_iterator,
-        const std::shared_ptr<std::vector<std::string>>& hashes
+        const std::shared_ptr<std::mutex>&                          file_iterator_mutex,
+        const std::shared_ptr<filesys::FileIterator>&               file_iterator,
+        const std::shared_ptr<std::vector<utils::BinaryBufferPtr>>& hashes
     )
     {
         WorkerThread{ file_iterator_mutex, file_iterator, hashes }.run();

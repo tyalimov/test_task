@@ -1,4 +1,5 @@
 ﻿#include "thread_pool.h"
+#include "worker_thread.h"
 
 namespace builder::threading
 {
@@ -14,7 +15,7 @@ namespace builder::threading
         {
             m_workers.emplace_back
             (
-                std::thread{ m_file_iterator_mutex, m_file_iterator, m_hashes }
+                std::thread{ WorkerThreadFunction, m_file_iterator_mutex, m_file_iterator, m_hashes }
             );
         }
     }
@@ -37,7 +38,7 @@ namespace builder::threading
 
         for (const auto& hash : *m_hashes)
         {
-            buffer_to_flush += hash;
+            //buffer_to_flush += hash;
         }
 
         // TODO: Записать в файл

@@ -13,7 +13,7 @@ namespace builder::filesys
 {
     void FileIterator::incrementChunk()
     {
-        m_buffer.reset(new std::string(m_chunk_size, static_cast<char>(0)));
+        m_buffer.reset(new utils::BinaryBuffer(m_chunk_size, static_cast<char>(0)));
 
         auto file_ptr_pos = ftell(m_file_ptr.get());
 
@@ -49,20 +49,18 @@ namespace builder::filesys
     FileIterator::FileIterator(const utils::Path &file_name, size_t chunk_size)
         : m_chunk_size(chunk_size)
         , m_file_size(static_cast<size_t>(utils::fs::file_size(file_name)))
-        , m_file_name(file_name)
-        , m_buffer(std::make_shared<std::string>(chunk_size, static_cast<char>(0)))
-        , m_file_ptr(fopen(file_name.generic_string().c_str(), "rb"))
         , m_more_data(utils::fs::file_size(file_name))
+        , m_file_name(file_name)
+        , m_file_ptr(fopen(file_name.generic_string().c_str(), "rb"))
+        , m_buffer(std::make_shared<utils::BinaryBuffer>(chunk_size, static_cast<uint8_t>(0)))
     {
         if (!m_file_ptr.get())
         {
             throw std::runtime_error("can't open file for reading");
         }
-
-        //incrementChunk();
     }
 
-    FileIterator::BinaryBufferPtr FileIterator::operator*() const
+    utils::BinaryBufferPtr FileIterator::operator*() const
     {
         return m_buffer;
     }
