@@ -1,4 +1,4 @@
-#include "hash_maker.h"
+﻿#include "hash_maker.h"
 
 namespace builder::crypto
 {
@@ -12,8 +12,9 @@ namespace builder::crypto
         Sha512Finalise(&m_context, &m_digest);
     }
 
+    // TODO: Подумай, может все-таки unique?
     utils::BinaryBufferPtr HashMaker::getHash() const
     {
-        return std::make_shared<utils::BinaryBuffer>(/*m_digest.bytes, m_digest.bytes + SHA512_DIGEST_SIZE*/);
+        return std::make_shared<utils::BinaryBuffer>(m_digest.bytes, m_digest.bytes + SHA512_DIGEST_SIZE);
     }
 }
