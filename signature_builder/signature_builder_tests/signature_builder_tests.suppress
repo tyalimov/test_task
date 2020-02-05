@@ -71,4 +71,28 @@
     <CodeCurrent>20152109</CodeCurrent>
     <CodeNext>70977</CodeNext>
   </signature_builder_tests>
+  <signature_builder_tests>
+    <FileName>gtest-internal.h</FileName>
+    <ErrorCode>V101</ErrorCode>
+    <Message>Implicit assignment type conversion to memsize type.</Message>
+    <CodePrev>3871416638</CodePrev>
+    <CodeCurrent>1799368376</CodeCurrent>
+    <CodeNext>3763349985</CodeNext>
+  </signature_builder_tests>
+  <signature_builder_tests>
+    <FileName>gtest-internal.h</FileName>
+    <ErrorCode>V108</ErrorCode>
+    <Message>Incorrect index type: type_names[not a memsize-type]. Use memsize type instead.</Message>
+    <CodePrev>552859652</CodePrev>
+    <CodeCurrent>129202971</CodeCurrent>
+    <CodeNext>558</CodeNext>
+  </signature_builder_tests>
+  <signature_builder_tests>
+    <FileName>gtest-param-util.h</FileName>
+    <ErrorCode>V128</ErrorCode>
+    <Message>The 'info.index' variable of the memsize type is written to a stream. Consider verifying the compatibility of _ and _ bit versions of the application in the context of a stored data.</Message>
+    <CodePrev>27526061</CodePrev>
+    <CodeCurrent>658140095</CodeCurrent>
+    <CodeNext>3375937979</CodeNext>
+  </signature_builder_tests>
 </NewDataSet>
