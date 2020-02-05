@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+﻿#include <gtest/gtest.h>
 
 #include <file_iterator.h>
 #include <utils.h>
@@ -10,7 +10,9 @@ using namespace builder;
 using utils::Path;
 using filesys::FileIterator;
 
-using ChunkList = std::vector<utils::BinaryBufferPtr>;
+using ChunkList = std::vector<filesys::BinaryBlock>;
+
+//TODO: Заменить чанки на блоки
 
 void GetChunks(const Path& filename, size_t chunk_size, ChunkList& chunks) try
 {
@@ -21,8 +23,13 @@ void GetChunks(const Path& filename, size_t chunk_size, ChunkList& chunks) try
 
     if (utils::fs::file_size(file_path) == 0)
     {
-        auto buf_ptr = std::make_shared<utils::BinaryBuffer>(chunk_size, 0);
-        chunks.push_back(buf_ptr);
+        auto block_ptr = filesys::BinaryBlock
+        {
+            0,
+            std::make_shared<utils::BinaryBuffer>(chunk_size, 0)
+        };
+
+        chunks.push_back(block_ptr);
         return;
     }
 
@@ -47,9 +54,12 @@ void TestEqual(const ChunkList& chunks, const std::vector<utils::BinaryBuffer>& 
     auto chunks_it   = chunks.begin();
     auto expected_it = expected.begin();
 
+    size_t block_id{ 0 };
+
     while (chunks_it != chunks.end())
     {
-        ASSERT_EQ(**chunks_it, *expected_it);
+        ASSERT_EQ(*(chunks_it->buffer), *expected_it);
+        ASSERT_EQ(chunks_it->id, block_id++);
         ++chunks_it;
         ++expected_it;
     }

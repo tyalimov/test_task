@@ -4,6 +4,8 @@
 
 #pragma warning (disable:4996)
 
+#define INITIAL_BLOCK_ID size_t(-1)
+
 // TODO: fopen
 // TODO: own exceptions
 // TODO: Так-ли нужно юзать CRT, может все-таки STL?
@@ -11,6 +13,18 @@
 
 namespace builder::filesys
 {
+    utils::FilePtr FileIterator::openFile(const utils::Path &file_name)
+    {
+        auto ptr = fopen(file_name.generic_string().c_str(), "rb");
+
+        if (!ptr)
+        {
+            throw std::runtime_error("can't open file for reading");
+        }
+
+        return utils::FilePtr(ptr);
+    }
+
     void FileIterator::incrementChunk()
     {
         m_buffer.reset(new utils::BinaryBuffer(m_chunk_size, static_cast<char>(0)));
@@ -49,20 +63,17 @@ namespace builder::filesys
     FileIterator::FileIterator(const utils::Path &file_name, size_t chunk_size)
         : m_chunk_size(chunk_size)
         , m_file_size(static_cast<size_t>(utils::fs::file_size(file_name)))
+        , m_current_block_id(INITIAL_BLOCK_ID)
         , m_more_data(utils::fs::file_size(file_name))
         , m_file_name(file_name)
-        , m_file_ptr(fopen(file_name.generic_string().c_str(), "rb"))
+        , m_file_ptr(openFile(file_name))
         , m_buffer(std::make_shared<utils::BinaryBuffer>(chunk_size, static_cast<uint8_t>(0)))
     {
-        if (!m_file_ptr.get())
-        {
-            throw std::runtime_error("can't open file for reading");
-        }
     }
 
-    utils::BinaryBufferPtr FileIterator::operator*() const
+    BinaryBlock FileIterator::operator*() const
     {
-        return m_buffer;
+        return BinaryBlock{ m_current_block_id, m_buffer };
     }
 
     FileIterator& FileIterator::operator++()
@@ -70,6 +81,15 @@ namespace builder::filesys
         if (m_more_data)
         {
             incrementChunk();
+
+            if (m_current_block_id == INITIAL_BLOCK_ID)
+            {
+                m_current_block_id = 0;
+            }
+            else
+            {
+                m_current_block_id++;
+            }
         }
         return (*this);
     }
