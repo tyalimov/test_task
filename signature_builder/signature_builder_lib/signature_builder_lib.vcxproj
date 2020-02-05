@@ -20,12 +20,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="file_iterator.cpp" />
+    <ClCompile Include="hash_maker.cpp" />
     <ClCompile Include="sha512.cpp" />
+    <ClCompile Include="thread_pool.cpp" />
+    <ClCompile Include="worker_thread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_iterator.h" />
+    <ClInclude Include="hash_maker.h" />
     <ClInclude Include="sha512.h" />
+    <ClInclude Include="thread_pool.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="worker_thread.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
