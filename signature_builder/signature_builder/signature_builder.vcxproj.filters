@@ -4,10 +4,21 @@
     <Filter Include="misc">
       <UniqueIdentifier>{62004dd6-4524-46d9-b67a-562e5208f189}</UniqueIdentifier>
     </Filter>
+    <Filter Include="argparse">
+      <UniqueIdentifier>{3d5f02dd-fa8b-4d08-a95a-d2b13cbf9672}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>misc</Filter>
     </ClCompile>
+    <ClCompile Include="cmd_manager.cpp">
+      <Filter>argparse</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cmd_manager.h">
+      <Filter>argparse</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
