@@ -8,9 +8,6 @@
 #include <mutex>
 #include <atomic>
 
-
-// TODO: выбери уже между chunk и block
-
 namespace builder::threading
 {
     class ThreadPool

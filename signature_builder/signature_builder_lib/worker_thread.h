@@ -8,14 +8,13 @@
 
 namespace builder::threading
 {
-    // TODO: Может быть передать сюда block_size, чтобы можно было заранее проаллоцировать память?
     class Worker
     {
     private:
         std::mutex&                        m_file_iterator_mutex; 
         std::mutex&                        m_global_hashes_mutex; 
-        filesys::FileIterator&             m_file_iterator;       
-        std::vector<utils::BinaryBuffer>&  m_global_hashes;       // TODO: Ptr?
+        filesys::FileIterator&             m_file_iterator;
+        std::vector<utils::BinaryBuffer>&  m_global_hashes;
         std::atomic_bool&                  m_stop_pool;
 
         void readBlocks();

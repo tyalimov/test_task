@@ -1,26 +1,28 @@
 ﻿#include "worker_thread.h"
 #include "hash_maker.h"
+#include <iostream>
 
 #define BLOCKS_COUNT_PER_READ 64
 
-#define THREADING_DEBUG
+//#define THREADING_DEBUG
 
 #ifdef THREADING_DEBUG
 #   include <iostream>
 #   include <boost/format.hpp>
 #endif
 
+std::mutex g_Cons;
+
 namespace builder::threading
 {
-    // Считаем, что размер файла не 0, так как этот случай обрабатываем отдельно
-    // TODO: Сразу по несколько блоков с
+    // TODO: Отдельно обработать 0 байт
     void Worker::readBlocks()
     {
         std::lock_guard<std::mutex> lock(m_file_iterator_mutex);
 
         for (size_t i = 0; i < BLOCKS_COUNT_PER_READ; i++)
         {
-#ifdef _DEBUG
+#ifdef THREADING_DEBUG
             std::cout <<
             boost::format("-------- [worker %d] reading block=%d\n")
                 % std::this_thread::get_id()
@@ -29,14 +31,16 @@ namespace builder::threading
 
             if (!m_file_iterator.moreDataAvailable())
             {
+#ifdef THREADING_DEBUG
                 std::cout <<
                 boost::format("-------- [worker %d] no more data available\n")
                     % std::this_thread::get_id();
+#endif
                 m_stop_pool = true;
                 return;
             }
 
-            m_local_blocks.emplace_back(*++m_file_iterator); // TODO: *++m_file_iterator
+            m_local_blocks.emplace_back(*++m_file_iterator);
         }
     }
 
@@ -46,7 +50,7 @@ namespace builder::threading
 
         for (const auto& local_block : m_local_blocks)
         {
-#ifdef _DEBUG
+#ifdef THREADING_DEBUG
             std::cout <<
             boost::format("-------- [worker %d] hash for block=%d\n")
                 % std::this_thread::get_id()
@@ -69,7 +73,7 @@ namespace builder::threading
 
         for (const auto& local_hash : m_local_hashes)
         {
-#ifdef _DEBUG
+#ifdef THREADING_DEBUG
             std::cout <<
                 boost::format("-------- [worker %d] flushing hash=%d\n")
                     % std::this_thread::get_id()
@@ -96,7 +100,7 @@ namespace builder::threading
     {
     }
 
-    void Worker::run()
+    void Worker::run() try
     {
         while (!m_stop_pool)
         {
@@ -104,5 +108,10 @@ namespace builder::threading
             calculateHashes();
             flushHashes();
         }
+    }
+    catch (const std::exception& ex)
+    {
+        std::lock_guard<std::mutex> lock(g_Cons);
+        std::cout << ex.what() << std::endl;
     }
 }

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <filesystem>
 #include <vector>
@@ -10,6 +10,7 @@ namespace builder::utils
 {
     namespace fs = std::filesystem;
 
+    // TODO: Прогнать под профайлером весь проект на утечки
     struct FileDeleter
     {
         using pointer = FILE*;

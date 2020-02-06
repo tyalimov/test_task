@@ -3,8 +3,6 @@
 #include "utils.h"
 #include "sha512.h"
 
-// TODO: Заменить string на vector<uit8_t>
-
 namespace builder::crypto
 {
     class HashMaker
