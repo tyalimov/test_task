@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
+#include <chrono>
 
 #include <thread_pool.h>
 #include <boost/format.hpp>
@@ -30,12 +31,21 @@ int main(int argc, const char *argv[]) try
         % cmd.block_size
         % cmd.workers_count;
 
-    
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     builder::threading::ThreadPool pool{ cmd.input_file, cmd.block_size, cmd.workers_count };
     pool.run();
 
     std::ofstream out( cmd.output_file, std::ios::out | std::ios::binary );
     out << pool.getSignature();
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::cout << 
+        boost::format("Signature generation finished.\nresult placed in - [%s]\ncalculation time -[%d seconds]\n")
+            % cmd.output_file
+            % std::chrono::duration_cast<std::chrono::seconds>( end - start ).count();
 }
 catch (const std::exception& ex)
 {
