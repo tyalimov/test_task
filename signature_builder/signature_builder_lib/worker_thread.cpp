@@ -2,7 +2,7 @@
 #include "hash_maker.h"
 #include <iostream>
 
-#define BLOCKS_COUNT_PER_READ 64
+#define BLOCKS_COUNT_PER_READ 128
 
 //#define THREADING_DEBUG
 

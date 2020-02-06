@@ -23,7 +23,6 @@ int main(int argc, const char *argv[]) try
     cmd.prepareParameters();
     std::cout << "[SUCCESS] - Getting ready for execution\n\n";
 
-    std::cout << "Initial parameters:\n\n";
     std::cout
         << boost::format("input file ---- [%s]\noutput file --- [%s]\nblock size ---- [%d bytes]\nthreads count - [%d]\n")
         % cmd.input_file
@@ -43,8 +42,7 @@ int main(int argc, const char *argv[]) try
     auto end = std::chrono::high_resolution_clock::now();
 
     std::cout << 
-        boost::format("Signature generation finished.\nresult placed in - [%s]\ncalculation time -[%d seconds]\n")
-            % cmd.output_file
+        boost::format("Signature generation finished.\n\ncalculation time -[%d seconds]\n")
             % std::chrono::duration_cast<std::chrono::seconds>( end - start ).count();
 }
 catch (const std::exception& ex)

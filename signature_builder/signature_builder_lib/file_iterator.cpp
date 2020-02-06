@@ -1,7 +1,5 @@
 ﻿#include "file_iterator.h"
 
-#pragma warning (disable:4996)
-
 #define INITIAL_BLOCK_ID size_t(-1)
 
 namespace builder::filesys
