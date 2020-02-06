@@ -29,7 +29,7 @@ namespace builder::filesys
     {
         m_buffer.reset(new utils::BinaryBuffer(m_chunk_size, static_cast<char>(0)));
 
-        auto file_ptr_pos = ftell(m_file_ptr.get());
+        auto file_ptr_pos = _ftelli64(m_file_ptr.get());
 
         if (file_ptr_pos == -1L)
         {
