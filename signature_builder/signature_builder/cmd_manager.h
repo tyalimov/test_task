@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <boost/program_options.hpp>
@@ -49,8 +49,8 @@ namespace builder::argparse
 
         std::string input_file;
         std::string output_file;
-        size_t      workers_count;
-        size_t      block_size;
+        uint32_t    workers_count;
+        uint32_t    block_size;
 
         bool        custom_workers_count_specified;
         bool        required_parameters_specified;

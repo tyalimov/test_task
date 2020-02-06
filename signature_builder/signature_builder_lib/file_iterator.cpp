@@ -27,7 +27,7 @@ namespace builder::filesys
         }
     }
 
-    FileIterator::FileIterator(const utils::Path &file_name, size_t chunk_size)
+    FileIterator::FileIterator(const utils::Path& file_name, size_t chunk_size)
         : m_block_size(chunk_size)
         , m_file_size(static_cast<uint64_t>(utils::fs::file_size(file_name)))
         , m_current_block_id(INITIAL_BLOCK_ID)

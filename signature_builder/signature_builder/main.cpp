@@ -8,7 +8,6 @@
 
 int main(int argc, const char *argv[]) try
 {
-
     builder::argparse::CommandLineManager cmd{ argc, argv };
 
     if (!cmd.required_parameters_specified)
@@ -42,8 +41,8 @@ int main(int argc, const char *argv[]) try
     auto end = std::chrono::high_resolution_clock::now();
 
     std::cout << 
-        boost::format("Signature generation finished.\n\ncalculation time -[%d seconds]\n")
-            % std::chrono::duration_cast<std::chrono::seconds>( end - start ).count();
+        boost::format("\nSignature generation finished.\ncalculation time - [%d seconds]\n")
+        % std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
 }
 catch (const std::exception& ex)
 {

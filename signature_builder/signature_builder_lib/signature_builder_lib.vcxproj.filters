@@ -7,9 +7,6 @@
     <Filter Include="filesys">
       <UniqueIdentifier>{9ba2110a-34e2-4262-85cc-0d15d3d0b431}</UniqueIdentifier>
     </Filter>
-    <Filter Include="output">
-      <UniqueIdentifier>{1922a923-8161-4e37-8b6e-21553482c722}</UniqueIdentifier>
-    </Filter>
     <Filter Include="threading">
       <UniqueIdentifier>{2b169229-3a7a-4515-acec-e82891227be1}</UniqueIdentifier>
     </Filter>
@@ -30,11 +27,14 @@
     <ClInclude Include="thread_pool.h">
       <Filter>threading</Filter>
     </ClInclude>
-    <ClInclude Include="worker_thread.h">
-      <Filter>threading</Filter>
-    </ClInclude>
     <ClInclude Include="hash_maker.h">
       <Filter>crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="worker.h">
+      <Filter>threading</Filter>
+    </ClInclude>
+    <ClInclude Include="progress_bar.h">
+      <Filter>threading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -47,11 +47,14 @@
     <ClCompile Include="thread_pool.cpp">
       <Filter>threading</Filter>
     </ClCompile>
-    <ClCompile Include="worker_thread.cpp">
-      <Filter>threading</Filter>
-    </ClCompile>
     <ClCompile Include="hash_maker.cpp">
       <Filter>crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="worker.cpp">
+      <Filter>threading</Filter>
+    </ClCompile>
+    <ClCompile Include="progress_bar.cpp">
+      <Filter>threading</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,17 +1,9 @@
-﻿#include "worker_thread.h"
+﻿#include "worker.h"
 #include "hash_maker.h"
 #include <iostream>
 
 #define BLOCKS_COUNT_PER_READ 128
 
-//#define THREADING_DEBUG
-
-#ifdef THREADING_DEBUG
-#   include <iostream>
-#   include <boost/format.hpp>
-#endif
-
-std::mutex g_Cons;
 
 namespace builder::threading
 {
@@ -20,22 +12,13 @@ namespace builder::threading
     {
         std::lock_guard<std::mutex> lock(m_file_iterator_mutex);
 
+        m_blocks_processed_on_iteration = 0;
+        m_local_blocks.clear();
+
         for (size_t i = 0; i < BLOCKS_COUNT_PER_READ; i++)
         {
-#ifdef THREADING_DEBUG
-            std::cout <<
-            boost::format("-------- [worker %d] reading block=%d\n")
-                % std::this_thread::get_id()
-                % i;
-#endif
-
             if (!m_file_iterator.moreDataAvailable())
             {
-#ifdef THREADING_DEBUG
-                std::cout <<
-                boost::format("-------- [worker %d] no more data available\n")
-                    % std::this_thread::get_id();
-#endif
                 m_stop_pool = true;
                 return;
             }
@@ -50,12 +33,6 @@ namespace builder::threading
 
         for (const auto& local_block : m_local_blocks)
         {
-#ifdef THREADING_DEBUG
-            std::cout <<
-            boost::format("-------- [worker %d] hash for block=%d\n")
-                % std::this_thread::get_id()
-                % local_block.id;
-#endif
             m_local_hashes.emplace_back
             (
                 filesys::BinaryBlock
@@ -64,7 +41,11 @@ namespace builder::threading
                     crypto::HashMaker(local_block.buffer).getHash()
                 )
             );
+
+            m_blocks_processed_on_iteration++;
         }
+
+        m_total_blocks_processed += m_blocks_processed_on_iteration;
     }
 
     void Worker::flushHashes()
@@ -73,12 +54,6 @@ namespace builder::threading
 
         for (const auto& local_hash : m_local_hashes)
         {
-#ifdef THREADING_DEBUG
-            std::cout <<
-                boost::format("-------- [worker %d] flushing hash=%d\n")
-                    % std::this_thread::get_id()
-                    % local_hash.id;
-#endif
             m_global_hashes[local_hash.id] = *local_hash.buffer;
         }
     }
@@ -89,14 +64,18 @@ namespace builder::threading
         std::mutex&                        global_hashes_mutex,
         filesys::FileIterator&             file_iterator,
         std::vector<utils::BinaryBuffer>&  hashes,
-        std::atomic_bool&                  stop_flag
+        std::atomic_bool&                  stop_flag,
+        std::atomic_uint32_t&              blocks_processed,
+        std::mutex&                        console_mutex
     )
         : m_file_iterator_mutex(file_iterator_mutex)
         , m_global_hashes_mutex(global_hashes_mutex)
+        , m_console_mutex(console_mutex)
         , m_file_iterator(file_iterator)
         , m_global_hashes(hashes)
         , m_stop_pool(stop_flag)
-        , m_readed_blocks_on_current_iteration(0)
+        , m_total_blocks_processed(blocks_processed)
+        , m_blocks_processed_on_iteration(0)
     {
     }
 
@@ -111,7 +90,7 @@ namespace builder::threading
     }
     catch (const std::exception& ex)
     {
-        std::lock_guard<std::mutex> lock(g_Cons);
-        std::cout << "thread - " <<  std::this_thread::get_id() << " failed - " << ex.what() << std::endl;
+        std::lock_guard<std::mutex> lock(m_console_mutex);
+        std::cout << "thread - " <<  std::this_thread::get_id() << " failed with - " << ex.what() << std::endl;
     }
 }
