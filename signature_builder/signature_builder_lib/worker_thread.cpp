@@ -112,6 +112,6 @@ namespace builder::threading
     catch (const std::exception& ex)
     {
         std::lock_guard<std::mutex> lock(g_Cons);
-        std::cout << ex.what() << std::endl;
+        std::cout << "thread - " <<  std::this_thread::get_id() << " failed - " << ex.what() << std::endl;
     }
 }
