@@ -23,7 +23,7 @@ namespace builder::filesys
         BinaryBlock operator * () const;
         FileIterator& operator ++ ();
 
-        [[nodiscard]] bool isMoreDataAvailable() const noexcept;
+        [[nodiscard]] bool moreDataAvailable() const noexcept;
 
     private:
         size_t                 m_chunk_size;

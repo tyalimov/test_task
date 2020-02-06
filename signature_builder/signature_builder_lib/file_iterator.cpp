@@ -94,7 +94,7 @@ namespace builder::filesys
         return (*this);
     }
 
-    bool FileIterator::isMoreDataAvailable() const noexcept
+    bool FileIterator::moreDataAvailable() const noexcept
     {
         return m_more_data;
     }

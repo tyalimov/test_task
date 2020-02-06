@@ -35,7 +35,7 @@ void GetChunks(const Path& filename, size_t chunk_size, ChunkList& chunks) try
 
     FileIterator iter(file_path, chunk_size);
 
-    while (iter.isMoreDataAvailable())
+    while (iter.moreDataAvailable())
     {
         ++iter;
         chunks.emplace_back(*iter);
