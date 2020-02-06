@@ -109,7 +109,7 @@ TEST(file_iterator, Padded_Read_Multiple_blocks)
 TEST(file_iterator, Unpadded_Read_Single_Block) 
 {
     BlockList blocks;
-    Path      path{ "unpadded_single_blocks.txt" };
+    Path      path{ "unpadded_single_block.txt" };
     size_t    block_size{ 10 };
 
     std::vector<utils::BinaryBuffer> expected
