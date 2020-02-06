@@ -3,35 +3,39 @@
 #include "file_iterator.h"
 
 #include <vector>
-#include <memory>
 #include <mutex>
+#include <atomic>
 
 namespace builder::threading
 {
     // TODO: Может быть передать сюда block_size, чтобы можно было заранее проаллоцировать память?
-    class WorkerThread
+    class Worker
     {
     private:
-        std::vector<utils::BinaryBufferPtr>                   m_blocks;
-        std::shared_ptr<std::mutex>                           m_file_iterator_mutex;
-        std::shared_ptr<filesys::FileIterator>                m_file_iterator;
-        std::shared_ptr<std::vector<utils::BinaryBufferPtr>>  m_hashes;
+        std::mutex&                        m_file_iterator_mutex; 
+        std::mutex&                        m_global_hashes_mutex; 
+        filesys::FileIterator&             m_file_iterator;       
+        std::vector<utils::BinaryBuffer>&  m_global_hashes;       // TODO: Ptr?
+        std::atomic_bool&                  m_stop_pool;
+
+        void readBlocks();
+        void calculateHashes();
+        void flushHashes();
 
     public:
-        WorkerThread
+        Worker
         (
-            const std::shared_ptr<std::mutex>&                          file_iterator_mutex,
-            const std::shared_ptr<filesys::FileIterator>&               file_iterator,
-            const std::shared_ptr<std::vector<utils::BinaryBufferPtr>>& hashes
+            std::mutex&                        file_iterator_mutex,
+            std::mutex&                        global_hashes_mutex,
+            filesys::FileIterator&             file_iterator,
+            std::vector<utils::BinaryBuffer>&  hashes,
+            std::atomic_bool&                  stop_flag
         );
+
+        size_t m_readed_blocks_on_current_iteration;
+        std::vector<filesys::BinaryBlock> m_local_blocks;
+        std::vector<filesys::BinaryBlock> m_local_hashes;
 
         void run();
     };
-
-    void WorkerThreadFunction
-    (
-        const std::shared_ptr<std::mutex>&                          file_iterator_mutex,
-        const std::shared_ptr<filesys::FileIterator>&               file_iterator,
-        const std::shared_ptr<std::vector<utils::BinaryBufferPtr>>& hashes
-    );
 }
