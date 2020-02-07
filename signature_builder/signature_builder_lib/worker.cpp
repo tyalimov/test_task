@@ -7,7 +7,6 @@
 
 namespace builder::threading
 {
-    // TODO: Отдельно обработать 0 байт
     void Worker::readBlocks()
     {
         std::lock_guard<std::mutex> lock(m_file_iterator_mutex);

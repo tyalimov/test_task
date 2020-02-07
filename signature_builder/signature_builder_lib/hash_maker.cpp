@@ -8,7 +8,17 @@ namespace builder::crypto
         , m_digest()
     {
         Sha512Initialise(&m_context);
-        Sha512Update(&m_context, data->data(), static_cast<uint32_t>(data->size()));
+        Sha512Update(&m_context, m_data->data(), static_cast<uint32_t>(m_data->size()));
+        Sha512Finalise(&m_context, &m_digest);
+    }
+
+    HashMaker::HashMaker(const utils::BinaryBuffer &data)
+        : m_data(std::make_shared<utils::BinaryBuffer>(data))
+        , m_context()
+        , m_digest()
+    {
+        Sha512Initialise(&m_context);
+        Sha512Update(&m_context, m_data->data(), static_cast<uint32_t>(m_data->size()));
         Sha512Finalise(&m_context, &m_digest);
     }
 

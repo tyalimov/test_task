@@ -1,9 +1,16 @@
 ﻿#include "thread_pool.h"
 #include "worker.h"
 #include "progress_bar.h"
+#include "hash_maker.h"
 
 namespace builder::threading
 {
+    std::string GetEmptyHash(uint32_t block_size)
+    {
+        auto hash = crypto::HashMaker{  utils::BinaryBuffer(block_size, 0) }.getHash();
+        return std::string{ hash->begin(), hash->end() };
+    }
+
     void ThreadPool::initialize()
     {
         m_workers.reserve(m_workers_count);
@@ -66,10 +73,15 @@ namespace builder::threading
 
     void ThreadPool::flushResult()
     {
-        for (auto hash =  m_hashes.begin(); hash != m_hashes.end();)
+        for (auto hash = m_hashes.begin(); hash != m_hashes.end();)
         {
             m_signature_buffer += std::string{hash->begin(), hash->end()};
             hash = m_hashes.erase(hash);
+        }
+
+        if (m_hashes.empty())
+        {
+            m_signature_buffer = GetEmptyHash(m_block_size);
         }
     }
 
@@ -91,7 +103,6 @@ namespace builder::threading
     {
         auto size = static_cast<uint64_t>(utils::fs::file_size(filename));
 
-        // TODO: Убрать
         return static_cast<uint32_t>((size % block_size) ? (size / block_size + 1) : (size / block_size));
     }
 
@@ -101,6 +112,7 @@ namespace builder::threading
         , m_file_iterator(filename, block_size)
         , m_stop(false)
         , m_blocks_processed(0)
+        , m_block_size(block_size)
         , m_progress_bar(m_blocks_processed, m_stop, getBlocksCount(filename, block_size), m_console_mutex)
     {
         initialize();
@@ -113,6 +125,7 @@ namespace builder::threading
         , m_file_iterator(filename, block_size)
         , m_stop(false)
         , m_blocks_processed(0)
+        , m_block_size(block_size)
         , m_progress_bar(m_blocks_processed, m_stop, getBlocksCount(filename, block_size), m_console_mutex)
     {
         initialize();

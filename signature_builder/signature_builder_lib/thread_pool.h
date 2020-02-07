@@ -32,8 +32,10 @@ namespace builder::threading
         std::atomic_bool                  m_stop;
         std::atomic_uint32_t              m_blocks_processed;
 
-        ProgressBar m_progress_bar;
-        std::vector<std::thread> m_progress_bar_thread;
+        uint32_t                          m_block_size;
+
+        ProgressBar                       m_progress_bar;
+        std::vector<std::thread>          m_progress_bar_thread;
 
         void initialize();
         void createWorkers();
