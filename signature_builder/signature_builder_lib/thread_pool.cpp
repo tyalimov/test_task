@@ -73,15 +73,16 @@ namespace builder::threading
 
     void ThreadPool::flushResult()
     {
+        if (m_hashes.empty())
+        {
+            m_signature_buffer = GetEmptyHash(m_block_size);
+            return;
+        }
+
         for (auto hash = m_hashes.begin(); hash != m_hashes.end();)
         {
             m_signature_buffer += std::string{hash->begin(), hash->end()};
             hash = m_hashes.erase(hash);
-        }
-
-        if (m_hashes.empty())
-        {
-            m_signature_buffer = GetEmptyHash(m_block_size);
         }
     }
 

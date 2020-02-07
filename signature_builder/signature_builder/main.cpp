@@ -29,6 +29,7 @@ int main(int argc, const char *argv[]) try
         % cmd.block_size
         % cmd.workers_count;
 
+    std::cout << "\n###### Calculating signature ######\n\n";
 
     auto start = std::chrono::high_resolution_clock::now();
 

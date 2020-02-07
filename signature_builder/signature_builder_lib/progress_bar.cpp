@@ -33,11 +33,14 @@ namespace builder::threading
                 % processed
                 % m_total_blocks
                 % percentage;
-            // there should be std::flush, but it's significantly slowing program
-            // so, there can be progres like: blocks processed: 1489/1489 | 100%674%
 
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
+
+        std::cout << boost::format("\rblocks processed: %d/%d | %d%%       ")
+        % m_total_blocks
+        % m_total_blocks
+        % 100.0;
     }
     catch (const std::exception& ex)
     {
