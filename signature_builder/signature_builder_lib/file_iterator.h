@@ -2,6 +2,8 @@
 
 #include "utils.h"
 
+#include <fstream>
+
 namespace builder::filesys
 {
     struct BinaryBlock
@@ -26,15 +28,14 @@ namespace builder::filesys
         [[nodiscard]] bool moreDataAvailable() const noexcept;
 
     private:
-        size_t                 m_chunk_size;
-        size_t                 m_file_size;
+        size_t                 m_block_size;
+        uint64_t               m_file_size;
         size_t                 m_current_block_id;
         bool                   m_more_data;
         utils::Path            m_file_name;
-        utils::FilePtr         m_file_ptr;
+        std::ifstream          m_file_ptr;
         utils::BinaryBufferPtr m_buffer;
 
-        static utils::FilePtr openFile(const utils::Path& file_name);
         void incrementChunk();
     };
 }

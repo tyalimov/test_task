@@ -10,11 +10,9 @@ using namespace builder;
 using utils::Path;
 using filesys::FileIterator;
 
-using ChunkList = std::vector<filesys::BinaryBlock>;
+using BlockList = std::vector<filesys::BinaryBlock>;
 
-//TODO: Заменить чанки на блоки
-
-void GetChunks(const Path& filename, size_t chunk_size, ChunkList& chunks) try
+void GetBlocks(const Path& filename, size_t block_size, BlockList& blocks) try
 {
     Path file_path = "file_iterator";
     file_path      /= filename;
@@ -26,19 +24,19 @@ void GetChunks(const Path& filename, size_t chunk_size, ChunkList& chunks) try
         auto block_ptr = filesys::BinaryBlock
         {
             0,
-            std::make_shared<utils::BinaryBuffer>(chunk_size, 0)
+            std::make_shared<utils::BinaryBuffer>(block_size, 0)
         };
 
-        chunks.push_back(block_ptr);
+        blocks.push_back(block_ptr);
         return;
     }
 
-    FileIterator iter(file_path, chunk_size);
+    FileIterator iter(file_path, block_size);
 
     while (iter.moreDataAvailable())
     {
         ++iter;
-        chunks.emplace_back(*iter);
+        blocks.emplace_back(*iter);
     } 
 }
 catch (const std::exception& ex)
@@ -47,20 +45,20 @@ catch (const std::exception& ex)
     FAIL();
 }
 
-void TestEqual(const ChunkList& chunks, const std::vector<utils::BinaryBuffer>& expected, size_t chunk_size) try
+void TestEqual(const BlockList& blocks, const std::vector<utils::BinaryBuffer>& expected, size_t block_size) try
 {
-    ASSERT_EQ(chunks.size(), expected.size());
+    ASSERT_EQ(blocks.size(), expected.size());
 
-    auto chunks_it   = chunks.begin();
+    auto blocks_it   = blocks.begin();
     auto expected_it = expected.begin();
 
     size_t block_id{ 0 };
 
-    while (chunks_it != chunks.end())
+    while (blocks_it != blocks.end())
     {
-        ASSERT_EQ(*(chunks_it->buffer), *expected_it);
-        ASSERT_EQ(chunks_it->id, block_id++);
-        ++chunks_it;
+        ASSERT_EQ(*(blocks_it->buffer), *expected_it);
+        ASSERT_EQ(blocks_it->id, block_id++);
+        ++blocks_it;
         ++expected_it;
     }
 
@@ -73,27 +71,27 @@ catch (const std::exception& ex)
 }
 
 
-TEST(file_iterator, Padded_Read_Single_Chunk)
+TEST(file_iterator, Padded_Read_Single_Block)
 {
-    ChunkList chunks;
-    Path      path{ "padded_single_chunk.txt" };
-    size_t    chunk_size{ 10 };
+    BlockList blocks;
+    Path      path{ "padded_single_block.txt" };
+    size_t    block_size{ 10 };
 
     std::vector<utils::BinaryBuffer> expected
     {
         { '0', '1','2','3','4','5','6','7','8','9' }
     };
 
-    GetChunks(path, chunk_size, chunks);
-    TestEqual(chunks, expected, chunk_size);
+    GetBlocks(path, block_size, blocks);
+    TestEqual(blocks, expected, block_size);
 }
 
 
-TEST(file_iterator, Padded_Read_Multiple_Chunks) 
+TEST(file_iterator, Padded_Read_Multiple_blocks) 
 {
-    ChunkList chunks;
-    Path      path{ "padded_multiple_chunks.txt" };
-    size_t    chunk_size{ 10 };
+    BlockList blocks;
+    Path      path{ "padded_multiple_blocks.txt" };
+    size_t    block_size{ 10 };
 
     std::vector<utils::BinaryBuffer> expected
     {
@@ -104,30 +102,30 @@ TEST(file_iterator, Padded_Read_Multiple_Chunks)
         { '1', '1','1','1','1','1','1','1','1','1' }
     };
 
-    GetChunks(path, chunk_size, chunks);
-    TestEqual(chunks, expected, chunk_size);
+    GetBlocks(path, block_size, blocks);
+    TestEqual(blocks, expected, block_size);
 }
 
-TEST(file_iterator, Unpadded_Read_Single_Chunk) 
+TEST(file_iterator, Unpadded_Read_Single_Block) 
 {
-    ChunkList chunks;
-    Path      path{ "unpadded_single_chunk.txt" };
-    size_t    chunk_size{ 10 };
+    BlockList blocks;
+    Path      path{ "unpadded_single_block.txt" };
+    size_t    block_size{ 10 };
 
     std::vector<utils::BinaryBuffer> expected
     {
         { '0', '1','2','3','4','5','6',0, 0, 0 }
     };
 
-    GetChunks(path, chunk_size, chunks);
-    TestEqual(chunks, expected, chunk_size);
+    GetBlocks(path, block_size, blocks);
+    TestEqual(blocks, expected, block_size);
 }
 
-TEST(file_iterator, Unpadded_Read_Multiple_Chunks) 
+TEST(file_iterator, Unpadded_Read_Multiple_blocks) 
 {
-    ChunkList chunks;
-    Path      path{ "unpadded_multiple_chunks.txt" };
-    size_t    chunk_size{ 10 };
+    BlockList blocks;
+    Path      path{ "unpadded_multiple_blocks.txt" };
+    size_t    block_size{ 10 };
 
     std::vector<utils::BinaryBuffer> expected
     {
@@ -138,22 +136,22 @@ TEST(file_iterator, Unpadded_Read_Multiple_Chunks)
         { '1', '1','1','1','1','1','1', 0,  0,  0  }
     };
 
-    GetChunks(path, chunk_size, chunks);
-    TestEqual(chunks, expected, chunk_size);
+    GetBlocks(path, block_size, blocks);
+    TestEqual(blocks, expected, block_size);
 }
 
 // We don't need to do padding, because it will be done by crypto library
 TEST(file_iterator, Read_Zero_Bytes) 
 {
-    ChunkList chunks;
+    BlockList blocks;
     Path      path{ "zero_bytes.txt" };
-    size_t    chunk_size{ 10 };
+    size_t    block_size{ 10 };
 
     std::vector<utils::BinaryBuffer> expected
     {
         { 0,0,0,0,0,0,0,0,0,0 }
     };
 
-    GetChunks(path, chunk_size, chunks);
-    TestEqual(chunks, expected, chunk_size);
+    GetBlocks(path, block_size, blocks);
+    TestEqual(blocks, expected, block_size);
 }

@@ -12,8 +12,8 @@ namespace builder::argparse
             (DESCR_HELP    , "Print this message")
             (DESCR_INPUT   , po::value<std::string>(&input_file) , "Path to input file to calculate signature")
             (DESCR_OUTPUT  , po::value<std::string>(&output_file), "Path to output file to store signature")
-            (DESCR_BLOCK   , po::value<size_t>(&block_size)      , "Block size to read from file (optional)")
-            (DESCR_WORKERS , po::value<size_t>(&workers_count)   , "Maximum number of working threads (optional)")
+            (DESCR_BLOCK   , po::value<uint32_t>(&block_size)      , "Block size to read from file (optional)")
+            (DESCR_WORKERS , po::value<uint32_t>(&workers_count)   , "Maximum number of working threads (optional)")
             ;
         po::parsed_options parsed_options = po::command_line_parser(args_count, args_list).options(description).run();
         po::store(parsed_options, variables_map);
@@ -36,11 +36,11 @@ namespace builder::argparse
     void CommandLineManager::assignValues()
     {
         workers_count = custom_workers_count_specified
-            ? variables_map[PARAM_WORKERS].as<size_t>()
+            ? variables_map[PARAM_WORKERS].as<uint32_t>()
             : threading::ThreadPool::getOptimalWorkersCount();
 
         block_size = custom_block_size_specified
-            ? variables_map[PARAM_BLOCK].as<size_t>()
+            ? variables_map[PARAM_BLOCK].as<uint32_t>()
             : DEFAULT_BLOCK_SIZE;
     }
 

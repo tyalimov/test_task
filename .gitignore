@@ -44,3 +44,6 @@
 *.exe
 *.out
 *.app
+
+# Google Test Binaries
+!**/signature_builder/[Pp]ackages
