@@ -1,14 +1,14 @@
 ﻿#include <gtest/gtest.h>
 
 #include <utils.h>
-#include <result_writer.h>
+#include <output_writer.h>
 
 #include <vector>
 #include <fstream>
 
 using namespace builder;
 
-using builder::filesys::ResultWriter;
+using builder::filesys::OutputWriter;
 using utils::Path;
 
 // block_size = 1
@@ -33,7 +33,7 @@ void TestAdding
     const utils::BinaryBlock& block
 )
 {
-    ResultWriter writer(file_name, blocks_count);
+    OutputWriter writer(file_name, blocks_count);
 
     ASSERT_EQ(utils::fs::file_size(file_name), expected_file_state.size());
 
@@ -52,7 +52,7 @@ TEST(result_writer, Creation_1_Block)
     auto blocks_count  = 1;
     auto expected_size = SHA512_DIGEST_SIZE * blocks_count;
 
-    ResultWriter writer(file_name, blocks_count);
+    OutputWriter writer(file_name, blocks_count);
 
     ASSERT_EQ(utils::fs::file_size(file_name), expected_size);
 }
@@ -65,7 +65,7 @@ TEST(result_writer, Creation_Padded_Block)
     auto blocks_count  = ZERO_BLOCK_SIZE / SHA512_DIGEST_SIZE;
     auto expected_size = SHA512_DIGEST_SIZE * blocks_count;
 
-    ResultWriter writer(file_name, blocks_count);
+    OutputWriter writer(file_name, blocks_count);
 
     ASSERT_EQ(utils::fs::file_size(file_name), expected_size);
 }
@@ -78,7 +78,7 @@ TEST(result_writer, Creation_Padded_Block_Plus_One)
     auto blocks_count  = (ZERO_BLOCK_SIZE / SHA512_DIGEST_SIZE) + 1;
     auto expected_size = SHA512_DIGEST_SIZE * blocks_count;
 
-    ResultWriter writer(file_name, blocks_count);
+    OutputWriter writer(file_name, blocks_count);
 
     ASSERT_EQ(utils::fs::file_size(file_name), expected_size);
 }

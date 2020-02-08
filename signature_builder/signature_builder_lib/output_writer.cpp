@@ -1,4 +1,4 @@
-﻿#include "result_writer.h"
+﻿#include "output_writer.h"
 
 namespace builder::filesys
 {

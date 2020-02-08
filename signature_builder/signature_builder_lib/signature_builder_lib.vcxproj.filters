@@ -36,10 +36,10 @@
     <ClInclude Include="thread_manager.h">
       <Filter>threading</Filter>
     </ClInclude>
-    <ClInclude Include="result_writer.h">
+    <ClInclude Include="input_reader.h">
       <Filter>filesys</Filter>
     </ClInclude>
-    <ClInclude Include="input_reader.h">
+    <ClInclude Include="output_writer.h">
       <Filter>filesys</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,13 +62,13 @@
     <ClCompile Include="thread_manager.cpp">
       <Filter>threading</Filter>
     </ClCompile>
-    <ClCompile Include="result_writer.cpp">
-      <Filter>filesys</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>misc</Filter>
     </ClCompile>
     <ClCompile Include="input_reader.cpp">
+      <Filter>filesys</Filter>
+    </ClCompile>
+    <ClCompile Include="output_writer.cpp">
       <Filter>filesys</Filter>
     </ClCompile>
   </ItemGroup>

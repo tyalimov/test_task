@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 
+// TODO: Перевести в enum
 #define SHA512_DIGEST_SIZE 64
 
 namespace builder::utils
@@ -30,13 +31,19 @@ namespace builder::utils
         BinaryBlock(size_t idx, const BinaryBufferPtr& buf)
             : id(idx)
             , buffer(buf)
-            , hash(std::make_shared<std::vector<uint8_t>>(SHA512_DIGEST_SIZE, static_cast<uint8_t>(0)))
+            , hash(std::make_shared<BinaryBuffer>(SHA512_DIGEST_SIZE, static_cast<uint8_t>(0)))
         {}
 
         BinaryBlock(size_t idx, const BinaryBufferPtr& buf, const BinaryBufferPtr& hash_buf)
             : id(idx)
             , buffer(buf)
             , hash(hash_buf)
+        {}
+
+        BinaryBlock()
+            : id(0)
+            , buffer(std::make_shared<BinaryBuffer>())
+            , hash(std::make_shared<BinaryBuffer>(SHA512_DIGEST_SIZE, static_cast<uint8_t>(0)))
         {}
     };
 }
