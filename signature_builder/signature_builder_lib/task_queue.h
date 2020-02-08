@@ -5,9 +5,11 @@
 #include <queue>
 #include <mutex>
 
+// TODO: Везде проверить ссылки
+
 namespace builder::threading
 {
-    struct HashTask
+    struct Task
     {
         utils::BinaryBlock block;
 
@@ -17,19 +19,21 @@ namespace builder::threading
     class TaskQueue
     {
     private:
-        std::queue<HashTask>         m_queue;
+        std::queue<Task>         m_queue;
         std::condition_variable  m_cv;
         std::mutex               m_mutex;
         bool                     m_no_more_push;
       
     public:
 
-        using SizeType = std::queue<HashTask>::size_type;
+        using SizeType = std::queue<Task>::size_type;
 
         TaskQueue();
 
-        bool tryPop(HashTask& task);
-        void push(const HashTask& task);
+        bool tryPop(Task& task);
+        bool tryPop(std::vector<Task>& tasks, uint64_t count);
+        void push(const Task& task);
+        void push(const std::vector<Task>& tasks);
         void stop();
 
         [[nodiscard]] bool stopped();
