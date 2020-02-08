@@ -80,9 +80,12 @@ namespace builder::threading
     {
         std::lock_guard<std::mutex> lock(m_mutex);
 
-        for (const auto& task : tasks)
+        if (!m_no_more_push)
         {
-            m_queue.push(task);
+            for (const auto& task : tasks)
+            {
+                m_queue.push(task);
+            }
         }
     }
 
