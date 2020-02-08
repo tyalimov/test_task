@@ -1,6 +1,6 @@
 ﻿#include <gtest/gtest.h>
 
-#include <file_iterator.h>
+#include <input_reader.h>
 #include <utils.h>
 
 #include <vector>
@@ -8,35 +8,24 @@
 using namespace builder;
 
 using utils::Path;
-using filesys::FileIterator;
+using filesys::InputReader;
 
 using BlockList = std::vector<utils::BinaryBlock>;
 
 void GetBlocks(const Path& filename, size_t block_size, BlockList& blocks) try
 {
-    Path file_path = "file_iterator";
+    Path file_path = "input_reader";
     file_path      /= filename;
 
     ASSERT_TRUE(utils::fs::exists(file_path));
 
-    if (utils::fs::file_size(file_path) == 0)
+    InputReader input_reader(file_path, block_size);
+
+    while (input_reader) //-V1044
     {
-        auto block_ptr = utils::BinaryBlock
-        {
-            0,
-            std::make_shared<utils::BinaryBuffer>(block_size, 0)
-        };
-
-        blocks.push_back(block_ptr);
-        return;
-    }
-
-    FileIterator iter(file_path, block_size);
-
-    while (iter.moreDataAvailable())
-    {
-        ++iter;
-        blocks.emplace_back(*iter);
+        utils::BinaryBlock buf;
+        input_reader >> buf;
+        blocks.push_back(buf);
     } 
 }
 catch (const std::exception& ex)
@@ -71,7 +60,7 @@ catch (const std::exception& ex)
 }
 
 
-TEST(file_iterator, Padded_Read_Single_Block)
+TEST(input_reader, Padded_Read_Single_Block)
 {
     BlockList blocks;
     Path      path{ "padded_single_block.txt" };
@@ -87,7 +76,7 @@ TEST(file_iterator, Padded_Read_Single_Block)
 }
 
 
-TEST(file_iterator, Padded_Read_Multiple_blocks) 
+TEST(input_reader, Padded_Read_Multiple_blocks) 
 {
     BlockList blocks;
     Path      path{ "padded_multiple_blocks.txt" };
@@ -106,7 +95,7 @@ TEST(file_iterator, Padded_Read_Multiple_blocks)
     TestEqual(blocks, expected, block_size);
 }
 
-TEST(file_iterator, Unpadded_Read_Single_Block) 
+TEST(input_reader, Unpadded_Read_Single_Block) 
 {
     BlockList blocks;
     Path      path{ "unpadded_single_block.txt" };
@@ -121,7 +110,7 @@ TEST(file_iterator, Unpadded_Read_Single_Block)
     TestEqual(blocks, expected, block_size);
 }
 
-TEST(file_iterator, Unpadded_Read_Multiple_blocks) 
+TEST(input_reader, Unpadded_Read_Multiple_blocks) 
 {
     BlockList blocks;
     Path      path{ "unpadded_multiple_blocks.txt" };
@@ -141,7 +130,7 @@ TEST(file_iterator, Unpadded_Read_Multiple_blocks)
 }
 
 // We don't need to do padding, because it will be done by crypto library
-TEST(file_iterator, Read_Zero_Bytes) 
+TEST(input_reader, Read_Zero_Bytes) 
 {
     BlockList blocks;
     Path      path{ "zero_bytes.txt" };

@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="file_iterator.h">
-      <Filter>filesys</Filter>
-    </ClInclude>
     <ClInclude Include="sha512.h">
       <Filter>crypto</Filter>
     </ClInclude>
@@ -42,11 +39,11 @@
     <ClInclude Include="result_writer.h">
       <Filter>filesys</Filter>
     </ClInclude>
+    <ClInclude Include="input_reader.h">
+      <Filter>filesys</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="file_iterator.cpp">
-      <Filter>filesys</Filter>
-    </ClCompile>
     <ClCompile Include="sha512.cpp">
       <Filter>crypto</Filter>
     </ClCompile>
@@ -70,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="input_reader.cpp">
+      <Filter>filesys</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

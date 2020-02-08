@@ -9,7 +9,7 @@
 namespace builder::filesys
 {
     // TODO: file.exceptions ( ofstream::badbit );
-    // TODO: Если файл уже существует, слать в жопу
+    // TODO: Если файл уже существует, слать в жопу (в мейне) 
     // TODO: assert / exception на несовпадение записи блока и размера файла
     class ResultWriter
     {
