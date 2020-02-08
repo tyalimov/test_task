@@ -10,6 +10,7 @@ namespace builder::filesys
 {
     // TODO: file.exceptions ( ofstream::badbit );
     // TODO: Если файл уже существует, слать в жопу
+    // TODO: assert / exception на несовпадение записи блока и размера файла
     class ResultWriter
     {
     private:
@@ -18,13 +19,13 @@ namespace builder::filesys
         std::ofstream     m_file;
         uint64_t          m_file_size;
 
-        void checkFileOpening();
+        void checkFileOpening() const;
         void fillWithZeros();
 
     public:
+        ResultWriter(const utils::Path& file_name, uint64_t hash_blocks_count);
 
-        explicit ResultWriter(const utils::Path& file_name, uint64_t blocks_count);
-
+        // TODO: Группа блоков
         ResultWriter& operator << (const utils::BinaryBlock& block);
     };
 }
