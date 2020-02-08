@@ -10,33 +10,6 @@ using namespace builder;
 
 using utils::Path;
 
-std::string ToHex(const utils::BinaryBuffer& input)
-{
-    static const char *const lut = "0123456789abcdef";
-    size_t len = input.size();
-
-    std::string output;
-    output.reserve(2 * len);
-
-    for (size_t i = 0; i < len; ++i)
-    {
-        const uint8_t c = input[i];
-        output.push_back(lut[c >> 4]);
-        output.push_back(lut[c & 15]);
-    }
-
-    return output;
-}
-
-std::string ReadFile(const Path& file)
-{
-    std::ifstream ss(file.generic_string(), std::ios::binary);
-    std::stringstream buffer;
-    buffer << ss.rdbuf();
-
-    return buffer.str();
-}
-
 utils::BinaryBuffer ToBinaryBuffer(const std::string& data)
 {
     return utils::BinaryBuffer{ data.begin(), data.end() };
@@ -49,11 +22,11 @@ void TestHashMaker(const std::string& expected, const Path& file) try
 
     EXPECT_TRUE(utils::fs::exists(filename));
 
-    auto file_data     = ReadFile(filename.generic_string());
+    auto file_data     = utils::ReadFile(filename.generic_string());
     auto buffer        = std::make_shared<utils::BinaryBuffer>(ToBinaryBuffer(file_data));
     auto hash          = crypto::HashMaker(buffer).getHash();
 
-    EXPECT_EQ(ToHex(*hash), expected);
+    EXPECT_EQ(utils::ToHex(*hash), expected);
 }
 catch (const std::exception& ex)
 {

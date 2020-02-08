@@ -8,7 +8,7 @@ namespace builder::filesys
     {
         m_buffer.reset(new utils::BinaryBuffer(m_block_size, static_cast<char>(0)));
 
-        uint64_t file_ptr_pos       = m_file_ptr.tellg();
+        uint64_t file_ptr_pos       = m_file.tellg();
         uint64_t bytes_left_in_file = m_file_size - file_ptr_pos;
         uint64_t bytes_to_read      = bytes_left_in_file >= m_block_size
                                         ? m_block_size
@@ -19,9 +19,9 @@ namespace builder::filesys
             m_more_data = false;
         }
 
-        m_file_ptr.read(reinterpret_cast<char*>(m_buffer->data()), bytes_to_read);
+        m_file.read(reinterpret_cast<char*>(m_buffer->data()), bytes_to_read);
 
-        if (!m_file_ptr)
+        if (!m_file)
         {
             throw std::runtime_error("error while reading file");
         }
@@ -33,14 +33,19 @@ namespace builder::filesys
         , m_current_block_id(INITIAL_BLOCK_ID)
         , m_more_data(utils::fs::file_size(file_name))
         , m_file_name(file_name)
-        , m_file_ptr(file_name.generic_string(), std::ios::binary)
+        , m_file(file_name.generic_string(), std::ios::binary)
         , m_buffer(std::make_shared<utils::BinaryBuffer>(chunk_size, static_cast<uint8_t>(0)))
     {
+        if (m_file.is_open())
+        {
+            // TODO: Ну тут точно надо юзнуть свои эксепшны
+            throw std::runtime_error("can't open file");
+        }
     }
 
-    BinaryBlock FileIterator::operator*() const
+    utils::BinaryBlock FileIterator::operator*() const
     {
-        return BinaryBlock{ m_current_block_id, m_buffer };
+        return utils::BinaryBlock{ m_current_block_id, m_buffer };
     }
 
     FileIterator& FileIterator::operator++()

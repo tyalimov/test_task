@@ -10,7 +10,7 @@ using namespace builder;
 using utils::Path;
 using filesys::FileIterator;
 
-using BlockList = std::vector<filesys::BinaryBlock>;
+using BlockList = std::vector<utils::BinaryBlock>;
 
 void GetBlocks(const Path& filename, size_t block_size, BlockList& blocks) try
 {
@@ -21,7 +21,7 @@ void GetBlocks(const Path& filename, size_t block_size, BlockList& blocks) try
 
     if (utils::fs::file_size(file_path) == 0)
     {
-        auto block_ptr = filesys::BinaryBlock
+        auto block_ptr = utils::BinaryBlock
         {
             0,
             std::make_shared<utils::BinaryBuffer>(block_size, 0)

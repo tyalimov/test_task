@@ -13,8 +13,7 @@ namespace builder::crypto
         SHA512_HASH             m_digest;
     public:
         explicit HashMaker(const utils::BinaryBufferPtr& data);
-        explicit HashMaker(const utils::BinaryBuffer& data);
 
-        utils::BinaryBufferPtr getHash() const;
+        [[nodiscard]] utils::BinaryBufferPtr getHash() const;
     };
 }

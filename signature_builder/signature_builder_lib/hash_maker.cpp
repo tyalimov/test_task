@@ -12,16 +12,6 @@ namespace builder::crypto
         Sha512Finalise(&m_context, &m_digest);
     }
 
-    HashMaker::HashMaker(const utils::BinaryBuffer &data)
-        : m_data(std::make_shared<utils::BinaryBuffer>(data))
-        , m_context()
-        , m_digest()
-    {
-        Sha512Initialise(&m_context);
-        Sha512Update(&m_context, m_data->data(), static_cast<uint32_t>(m_data->size()));
-        Sha512Finalise(&m_context, &m_digest);
-    }
-
     utils::BinaryBufferPtr HashMaker::getHash() const
     {
         return std::make_shared<utils::BinaryBuffer>(m_digest.bytes, m_digest.bytes + SHA512_DIGEST_SIZE);

@@ -22,16 +22,21 @@
     <ClCompile Include="file_iterator.cpp" />
     <ClCompile Include="hash_maker.cpp" />
     <ClCompile Include="progress_bar.cpp" />
+    <ClCompile Include="result_writer.cpp" />
     <ClCompile Include="sha512.cpp" />
-    <ClCompile Include="thread_pool.cpp" />
+    <ClCompile Include="task_queue.cpp" />
+    <ClCompile Include="thread_manager.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="worker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_iterator.h" />
     <ClInclude Include="hash_maker.h" />
     <ClInclude Include="progress_bar.h" />
+    <ClInclude Include="result_writer.h" />
     <ClInclude Include="sha512.h" />
-    <ClInclude Include="thread_pool.h" />
+    <ClInclude Include="task_queue.h" />
+    <ClInclude Include="thread_manager.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="worker.h" />
   </ItemGroup>
