@@ -8,10 +8,9 @@
 
 namespace builder::filesys
 {
-    // TODO: file.exceptions ( ofstream::badbit );
     // TODO: Если файл уже существует, слать в жопу (в мейне) 
     // TODO: assert / exception на несовпадение записи блока и размера файла
-    class ResultWriter
+    class OutputWriter
     {
     private:
         static const char kDataToFill[ZERO_BLOCK_SIZE];
@@ -23,9 +22,10 @@ namespace builder::filesys
         void fillWithZeros();
 
     public:
-        ResultWriter(const utils::Path& file_name, uint64_t hash_blocks_count);
+        OutputWriter(const utils::Path& file_name, uint64_t hash_blocks_count);
+        OutputWriter() = default;
 
-        // TODO: Группа блоков
-        ResultWriter& operator << (const utils::BinaryBlock& block);
+        OutputWriter& operator << (const utils::BinaryBlock& block);
+        OutputWriter& operator << (const std::vector<utils::BinaryBlock>& blocks);
     };
 }

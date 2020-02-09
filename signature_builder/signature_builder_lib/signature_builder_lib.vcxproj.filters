@@ -27,9 +27,6 @@
     <ClInclude Include="worker.h">
       <Filter>threading</Filter>
     </ClInclude>
-    <ClInclude Include="progress_bar.h">
-      <Filter>threading</Filter>
-    </ClInclude>
     <ClInclude Include="task_queue.h">
       <Filter>threading</Filter>
     </ClInclude>
@@ -51,9 +48,6 @@
       <Filter>crypto</Filter>
     </ClCompile>
     <ClCompile Include="worker.cpp">
-      <Filter>threading</Filter>
-    </ClCompile>
-    <ClCompile Include="progress_bar.cpp">
       <Filter>threading</Filter>
     </ClCompile>
     <ClCompile Include="task_queue.cpp">

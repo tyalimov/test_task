@@ -2,9 +2,9 @@
 
 namespace builder::filesys
 {
-    const char ResultWriter::kDataToFill[] = { static_cast<char>(0) };
+    const char OutputWriter::kDataToFill[] = { static_cast<char>(0) };
 
-    void ResultWriter::checkFileOpening() const
+    void OutputWriter::checkFileOpening() const
     {
         if (!m_file.is_open())
         {
@@ -13,7 +13,7 @@ namespace builder::filesys
         }
     }
 
-    void ResultWriter::fillWithZeros()
+    void OutputWriter::fillWithZeros()
     {
         if (m_file_size <= ZERO_BLOCK_SIZE)
         {
@@ -38,7 +38,7 @@ namespace builder::filesys
         m_file.flush();
     }
 
-    ResultWriter::ResultWriter(const utils::Path &file_name, uint64_t hash_blocks_count)
+    OutputWriter::OutputWriter(const utils::Path &file_name, uint64_t hash_blocks_count)
         : m_file(file_name.generic_string(), std::fstream::out | std::fstream::binary | std::fstream::trunc)
         , m_file_size(hash_blocks_count * SHA512_DIGEST_SIZE)
     {
@@ -46,12 +46,26 @@ namespace builder::filesys
         fillWithZeros();
     }
 
-    ResultWriter& ResultWriter::operator << (const utils::BinaryBlock& block)
+    OutputWriter& OutputWriter::operator << (const utils::BinaryBlock& block)
     {
-        uint64_t offset = block.id * SHA512_DIGEST_SIZE; //  TODO: -1?
+        uint64_t offset = block.id * SHA512_DIGEST_SIZE; 
 
         m_file.seekp(offset);
         m_file.write(reinterpret_cast<char*>(block.hash->data()), SHA512_DIGEST_SIZE);
+        m_file.flush();
+
+        return (*this);
+    }
+
+    OutputWriter & OutputWriter::operator<<(const std::vector<utils::BinaryBlock> &blocks)
+    {
+        for (const auto& block : blocks)
+        {
+            uint64_t offset = block.id * SHA512_DIGEST_SIZE; 
+            m_file.seekp(offset);
+            m_file.write(reinterpret_cast<char*>(block.hash->data()), SHA512_DIGEST_SIZE);
+        }
+
         m_file.flush();
 
         return (*this);

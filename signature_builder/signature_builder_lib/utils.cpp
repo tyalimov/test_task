@@ -43,7 +43,7 @@ namespace builder::utils
         file.seekg(0, std::ios::beg);
 
         std::vector<uint8_t> vec;
-        vec.reserve(file_size);
+        vec.reserve(static_cast<size_t>(file_size));
 
         vec.insert(vec.begin(),
                    std::istream_iterator<uint8_t>(file),

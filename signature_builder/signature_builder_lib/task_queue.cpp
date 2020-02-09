@@ -3,6 +3,8 @@
 
 namespace builder::threading
 {
+    // TODO: perform hash/flush
+    // TODO: ССЫЛКИ!
     void Task::perform()
     {
         block.hash = crypto::HashMaker(block.buffer).getHash();
@@ -46,7 +48,7 @@ namespace builder::threading
                 return m_no_more_push || !this->m_queue.empty();
             });
 
-        if (m_no_more_push)
+        if (m_no_more_push && m_queue.empty())
         {
             return false;
         }
@@ -56,7 +58,7 @@ namespace builder::threading
             ? count
             : queue_size;
 
-        for (size_t i = 0; i < tasks_to_pop; i++)
+        for (decltype(tasks_to_pop) i = 0; i < tasks_to_pop; i++)
         {
             tasks.emplace_back(m_queue.front());
             m_queue.pop();
@@ -85,6 +87,7 @@ namespace builder::threading
             for (const auto& task : tasks)
             {
                 m_queue.push(task);
+                m_cv.notify_one();
             }
         }
     }

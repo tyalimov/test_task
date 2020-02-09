@@ -28,13 +28,13 @@ namespace builder::utils
         BinaryBufferPtr buffer;
         BinaryBufferPtr hash;
 
-        BinaryBlock(size_t idx, const BinaryBufferPtr& buf)
+        BinaryBlock(uint64_t idx, const BinaryBufferPtr& buf)
             : id(idx)
             , buffer(buf)
             , hash(std::make_shared<BinaryBuffer>(SHA512_DIGEST_SIZE, static_cast<uint8_t>(0)))
         {}
 
-        BinaryBlock(size_t idx, const BinaryBufferPtr& buf, const BinaryBufferPtr& hash_buf)
+        BinaryBlock(uint64_t idx, const BinaryBufferPtr& buf, const BinaryBufferPtr& hash_buf)
             : id(idx)
             , buffer(buf)
             , hash(hash_buf)

@@ -1,95 +1,65 @@
 ﻿#include "worker.h"
 #include "hash_maker.h"
+
 #include <iostream>
+#include <boost/format.hpp>
 
-#define BLOCKS_COUNT_PER_READ 128
-
+#define THREAD_DEBUG
 
 namespace builder::threading
 {
-    void Worker::readBlocks()
-    {
-        std::lock_guard<std::mutex> lock(m_file_iterator_mutex);
-
-        m_blocks_processed_on_iteration = 0;
-        m_local_blocks.clear();
-
-        for (size_t i = 0; i < BLOCKS_COUNT_PER_READ; i++)
-        {
-            if (!m_file_iterator.moreDataAvailable())
-            {
-                m_stop_pool = true;
-                return;
-            }
-
-            m_local_blocks.emplace_back(*++m_file_iterator);
-        }
-    }
-
-    void Worker::calculateHashes()
-    {
-        m_local_hashes.clear();
-
-        for (const auto& local_block : m_local_blocks)
-        {
-            m_local_hashes.emplace_back
-            (
-                filesys::BinaryBlock
-                (
-                    local_block.id,
-                    crypto::HashMaker(local_block.buffer).getHash()
-                )
-            );
-
-            m_blocks_processed_on_iteration++;
-        }
-
-        m_total_blocks_processed += m_blocks_processed_on_iteration;
-    }
-
-    void Worker::flushHashes()
-    {
-        std::lock_guard<std::mutex> lock(m_global_hashes_mutex);
-
-        for (const auto& local_hash : m_local_hashes)
-        {
-            m_global_hashes[local_hash.id] = *local_hash.buffer;
-        }
-    }
-
-    Worker::Worker
-    (
-        std::mutex&                        file_iterator_mutex,
-        std::mutex&                        global_hashes_mutex,
-        filesys::FileIterator&             file_iterator,
-        std::vector<utils::BinaryBuffer>&  hashes,
-        std::atomic_bool&                  stop_flag,
-        std::atomic_uint32_t&              blocks_processed,
-        std::mutex&                        console_mutex
-    )
-        : m_file_iterator_mutex(file_iterator_mutex)
-        , m_global_hashes_mutex(global_hashes_mutex)
-        , m_console_mutex(console_mutex)
-        , m_file_iterator(file_iterator)
-        , m_global_hashes(hashes)
-        , m_stop_pool(stop_flag)
-        , m_total_blocks_processed(blocks_processed)
-        , m_blocks_processed_on_iteration(0)
-    {
-    }
-
+    
     void Worker::run() try
     {
+#ifdef _DEBUG
+        {
+            std::lock_guard<std::mutex> lock(m_console_mutex);
+            std::cout << boost::format("thread [%d] started\n")
+                % std::this_thread::get_id();
+        }
+#endif
+
         while (!m_stop_pool)
         {
-            readBlocks();
-            calculateHashes();
-            flushHashes();
+            m_tasks.clear();
+
+            auto status = m_hash_queue.tryPop(m_tasks, kMaxTasksPerIteration);
+
+            if (!status)
+            {
+#ifdef _DEBUG
+                {
+                    std::lock_guard<std::mutex> lock(m_console_mutex);
+                    std::cout << boost::format("thread [%d] finished because of no more push\n")
+                        % std::this_thread::get_id();
+                }
+#endif
+                break;
+            }
+
+#ifdef _DEBUG
+                {
+                    std::lock_guard<std::mutex> lock(m_console_mutex);
+                    std::cout << boost::format("thread [%d] got %d tasks\n")
+                        % std::this_thread::get_id()
+                        % m_tasks.size();
+                }
+#endif
+
+            for (auto& task : m_tasks)
+            {
+                task.perform();
+            }
+            
+            m_flush_queue.push(m_tasks);
         }
     }
     catch (const std::exception& ex)
     {
         std::lock_guard<std::mutex> lock(m_console_mutex);
-        std::cout << "thread - " <<  std::this_thread::get_id() << " failed with - " << ex.what() << std::endl;
+
+        std::cout << boost::format("thread [%d] failed - [%s]")
+            % std::this_thread::get_id()
+            % ex.what();
     }
 }

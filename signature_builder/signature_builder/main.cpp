@@ -2,8 +2,9 @@
 #include <fstream>
 #include <chrono>
 
-#include <thread_pool.h>
+#include <thread_manager.h>
 #include <boost/format.hpp>
+
 #include "cmd_manager.h"
 
 int main(int argc, const char *argv[]) try
@@ -33,17 +34,16 @@ int main(int argc, const char *argv[]) try
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    builder::threading::ThreadPool pool{ cmd.input_file, cmd.block_size, cmd.workers_count };
+    builder::threading::ThreadManager pool{ cmd.input_file, cmd.output_file, cmd.block_size, cmd.workers_count };
     pool.run();
-
-    std::ofstream out( cmd.output_file, std::ios::out | std::ios::binary );
-    out << pool.getSignature();
 
     auto end = std::chrono::high_resolution_clock::now();
 
+    // TODO: format ss.mmm
     std::cout << 
         boost::format("\nSignature generation finished.\ncalculation time - [%d seconds]\n")
         % std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+
 }
 catch (const std::exception& ex)
 {

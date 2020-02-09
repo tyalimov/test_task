@@ -13,6 +13,12 @@ namespace builder::threading
     {
         utils::BinaryBlock block;
 
+        explicit Task(const utils::BinaryBlock& b)
+            : block(b)
+        {}
+
+        Task() = default;
+
         void perform();
     };
 
