@@ -10,13 +10,6 @@ using namespace builder;
 
 using utils::Path;
 
-// TODO: fix
-
-utils::BinaryBuffer ToBinaryBuffer(const std::string& data)
-{
-    return utils::BinaryBuffer{ data.begin(), data.end() };
-}
-
 void TestHashMaker(const std::string& expected, const Path& file) try
 {
     Path filename = "hash_maker";
@@ -27,7 +20,11 @@ void TestHashMaker(const std::string& expected, const Path& file) try
     auto file_data     = utils::ReadFile(filename.generic_string());
     auto hash          = crypto::HashMaker((uint8_t*)file_data.c_str(),file_data.size()).getHash();
 
-    //EXPECT_EQ(utils::ToHex(hash.bytes), expected);
+    EXPECT_EQ
+    (
+        utils::ToHex(std::string((char*)hash.bytes, SHA512_DIGEST_SIZE)), 
+        expected
+    );
 }
 catch (const std::exception& ex)
 {

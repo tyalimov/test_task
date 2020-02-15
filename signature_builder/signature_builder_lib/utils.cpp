@@ -8,7 +8,7 @@
 
 namespace builder::utils
 {
-    std::string ToHex(const BinaryBuffer &input)
+    std::string ToHex(const std::string& input)
     {
         static const char *const lut = "0123456789abcdef";
         size_t len = input.size();
@@ -62,6 +62,6 @@ namespace builder::utils
     void CreateOutputFile(const Path& input, const Path& output, uint64_t block_size)
     {
         uint64_t blocks_count = AlignGreater(file_size(input), block_size);
-        filesys::OutputFileFormatter{ output, blocks_count };
+        filesys::OutputFileFormatter fmt{ output, blocks_count };
     }
 }

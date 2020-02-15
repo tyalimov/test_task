@@ -17,7 +17,7 @@ namespace builder::utils
     using BinaryBufferPtr = std::shared_ptr<BinaryBuffer>;
     using UniqueBuffer    = std::unique_ptr<BinaryBuffer>;
 
-    std::string ToHex(const BinaryBuffer& input);
+    std::string ToHex(const std::string& input);
     std::string ReadFile(const Path& file);
     std::vector<uint8_t> ReadBinaryFile(const Path& file_name);
     uint64_t AlignGreater(uint64_t total_size, uint64_t block_size);
