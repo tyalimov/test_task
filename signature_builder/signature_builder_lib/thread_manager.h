@@ -1,69 +1,58 @@
 ﻿#pragma once
 
 #include "utils.h"
-#include "input_reader.h"
+#include "file_mapper.h"
 #include "worker.h"
 
 #include <thread>
 #include <mutex>
 #include <atomic>
 
-#include "task_queue.h"
-#include "output_writer.h"
+
+#ifdef _DEBUG
+#   define DBG_PRINT_STATS() { printStats(); }
+#else
+#   define DBG_PRINT_STATS()
+#endif
+
+#ifndef _DEBUG
+#   define UPDATE_PROGRESS_BAR() { updateProgressBar(); }
+#else
+#   define UPDATE_PROGRESS_BAR()
+#endif
 
 namespace builder::threading
 {
-    constexpr uint64_t Gb(int val)
-    {
-        return uint64_t(val) * uint64_t(1024) * uint64_t(1024);
-    }
-
     class ThreadManager
     {
     private:
 
-        static const uint64_t kMaxBlocksToRead     = 128;
-        static const uint64_t kMaxBlocksToFlush    = 128;
-        static const uint64_t kMaxAvailableMemory  = Gb(2);
-        
-        TaskQueue                m_hash_task_queue;
-        TaskQueue                m_flush_task_queue;
         std::vector<Worker>      m_workers;
         std::vector<std::thread> m_threads;
         std::mutex               m_console_mutex;
-        std::atomic_bool         m_stop_pool;           // ctor
+        std::atomic_bool         m_stop_pool;
 
-        filesys::InputReader     m_input_reader;        // ctor
-        filesys::OutputWriter    m_output_writer;       // +
+        filesys::FileMapper      m_input_mapper;
+        filesys::FileMapper      m_output_mapper;
 
-        uint32_t                 m_workers_count;       // ctor
-        uint64_t                 m_blocks_processed;    // ctor
-        uint64_t                 m_total_blocks;        // +
-        uint64_t                 m_max_hash_task_count; // +
-        uint64_t                 m_block_size;          // ctor
-        uint64_t                 m_input_file_size;     // +
+        uint32_t                 m_workers_count;
+        uint64_t                 m_total_blocks;
 
-        utils::Path              m_input_file_name;     // ctor
-        utils::Path              m_output_file_name;    // ctor
+        std::atomic_uint64_t     m_current_block_id;
 
-        // thread management
-        void initialize();
+        void mapFiles();
         void createWorkers();
         void createThreads();
         void joinAll();
 
         // task management
-        void readBlocks();
-        void flushBlocks();
-        void calcHashes();
         void updateProgressBar() const;
 
 #ifdef _DEBUG
-        void printStatistics();
+        void printStats();
 #endif
 
-        [[nodiscard]] static uint64_t getBlocksCount(uint64_t file_size, uint64_t block_size);
-        [[nodiscard]] uint64_t getMaxActiveBlocksCount(uint64_t block_size) const;
+        [[nodiscard]] static uint64_t getBlocksCount(const utils::Path &input, uint64_t block_size);
 
     public:
         ThreadManager(const ThreadManager& rhs)             = delete;

@@ -1,10 +1,15 @@
 ﻿#pragma once
 
-#include <vector>
 #include <mutex>
 #include <atomic>
 
-#include "task_queue.h"
+#include "file_mapper.h"
+
+#ifdef _DEBUG
+#   define LOG(msg) { std::lock_guard<std::mutex> lock(m_console_mutex); std::cout << msg << std::endl; }
+#else
+#   define LOG(msg)
+#endif
 
 namespace builder::threading
 {
@@ -12,30 +17,21 @@ namespace builder::threading
     {
         
     private:
-        TaskQueue&        m_hash_queue;
-        TaskQueue&        m_flush_queue;
-        std::vector<Task> m_tasks;
-        std::mutex&       m_console_mutex;
-        std::atomic_bool& m_stop_pool;
-
-        static const uint64_t kMaxTasksPerIteration = 128;
+        std::mutex&           m_console_mutex;
+        std::atomic_uint64_t& m_current_block_id;
+        filesys::FileMapper&  m_input_mapper;
+        filesys::FileMapper&  m_output_mapper;
 
     public:
 
-
+        // TODO: Проверить все конструкторы на консистентность
         Worker
         (
-            TaskQueue&        hash_queue,
-            TaskQueue&        flush_queue,
-            std::mutex&       console_mutex,
-            std::atomic_bool& stop_pool
-        )
-            : m_hash_queue(hash_queue)
-            , m_flush_queue(flush_queue)
-            , m_tasks()
-            , m_console_mutex(console_mutex)
-            , m_stop_pool(stop_pool)
-        {}
+            std::mutex&           console_mutex,
+            std::atomic_uint64_t& current_block_id,
+            filesys::FileMapper&  input_mapper,
+            filesys::FileMapper&  output_mapper
+        );
 
         void run();
     };

@@ -4,6 +4,8 @@
 #include <sstream>
 #include <iterator>
 
+#include "output_file_formatter.h"
+
 namespace builder::utils
 {
     std::string ToHex(const BinaryBuffer &input)
@@ -50,5 +52,16 @@ namespace builder::utils
                    std::istream_iterator<uint8_t>());
 
         return vec;
+    }
+
+    uint64_t AlignGreater(uint64_t total_size, uint64_t block_size)
+    {
+         return (total_size % block_size) ? (total_size / block_size + 1) : (total_size / block_size);
+    }
+
+    void CreateOutputFile(const Path& input, const Path& output, uint64_t block_size)
+    {
+        uint64_t blocks_count = AlignGreater(file_size(input), block_size);
+        filesys::OutputFileFormatter{ output, blocks_count };
     }
 }

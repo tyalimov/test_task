@@ -4,54 +4,46 @@
 #include <iostream>
 #include <boost/format.hpp>
 
-#define THREAD_DEBUG
-
 namespace builder::threading
 {
-    
+    Worker::Worker
+    (
+        std::mutex&           console_mutex,
+        std::atomic_uint64_t& current_block_id,
+        filesys::FileMapper&  input_mapper,
+        filesys::FileMapper&  output_mapper
+    )
+        : m_console_mutex(console_mutex)
+        , m_current_block_id(current_block_id)
+        , m_input_mapper(input_mapper)
+        , m_output_mapper(output_mapper)
+    {
+    }
+
     void Worker::run() try
     {
-#ifdef _DEBUG
+
+        LOG(boost::format("thread [%d] started") % std::this_thread::get_id())
+
+        while (m_current_block_id.load() < m_input_mapper.getTotalBlocks())
         {
-            std::lock_guard<std::mutex> lock(m_console_mutex);
-            std::cout << boost::format("thread [%d] started\n")
-                % std::this_thread::get_id();
-        }
-#endif
+            uint64_t taken_block_id = m_current_block_id++;
 
-        while (!m_stop_pool)
-        {
-            m_tasks.clear();
-
-            auto status = m_hash_queue.tryPop(m_tasks, kMaxTasksPerIteration);
-
-            if (!status)
+            if (taken_block_id >= m_input_mapper.getTotalBlocks())
             {
-#ifdef _DEBUG
-                {
-                    std::lock_guard<std::mutex> lock(m_console_mutex);
-                    std::cout << boost::format("thread [%d] finished because of no more push\n")
-                        % std::this_thread::get_id();
-                }
-#endif
                 break;
             }
 
-#ifdef _DEBUG
-                {
-                    std::lock_guard<std::mutex> lock(m_console_mutex);
-                    std::cout << boost::format("thread [%d] got %d tasks\n")
-                        % std::this_thread::get_id()
-                        % m_tasks.size();
-                }
-#endif
-
-            for (auto& task : m_tasks)
-            {
-                task.perform();
-            }
+            LOG(boost::format("[%d] get block - [%d] of [%d]") 
+                % std::this_thread::get_id() 
+                % taken_block_id 
+                % m_input_mapper.getTotalBlocks())
             
-            m_flush_queue.push(m_tasks);
+            filesys::MappedBlock taken_block  = m_input_mapper.getPtr(taken_block_id);
+            filesys::MappedBlock result_block = m_output_mapper.getPtr(taken_block_id);
+            SHA512_HASH digest                = crypto::HashMaker(taken_block.m_ptr, taken_block.m_size).getHash();
+
+            //std::memcpy(result_block.m_ptr, digest.bytes, result_block.m_size);
         }
     }
     catch (const std::exception& ex)
@@ -60,6 +52,7 @@ namespace builder::threading
 
         std::cout << boost::format("thread [%d] failed - [%s]")
             % std::this_thread::get_id()
-            % ex.what();
+            % ex.what() 
+        << std::endl;
     }
 }
