@@ -162,12 +162,12 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cmd_manager.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\signature_builder_lib\signature_builder_lib.vcxproj">
       <Project>{1a38826d-5b9f-4dee-91d3-f28b922a4dfb}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="cmd_manager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

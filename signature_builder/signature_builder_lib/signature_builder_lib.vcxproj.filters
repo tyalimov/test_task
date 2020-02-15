@@ -15,17 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="file_iterator.h">
-      <Filter>filesys</Filter>
-    </ClInclude>
     <ClInclude Include="sha512.h">
       <Filter>crypto</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
       <Filter>misc</Filter>
-    </ClInclude>
-    <ClInclude Include="thread_pool.h">
-      <Filter>threading</Filter>
     </ClInclude>
     <ClInclude Include="hash_maker.h">
       <Filter>crypto</Filter>
@@ -33,19 +27,19 @@
     <ClInclude Include="worker.h">
       <Filter>threading</Filter>
     </ClInclude>
-    <ClInclude Include="progress_bar.h">
+    <ClInclude Include="thread_manager.h">
       <Filter>threading</Filter>
+    </ClInclude>
+    <ClInclude Include="file_mapper.h">
+      <Filter>filesys</Filter>
+    </ClInclude>
+    <ClInclude Include="output_file_formatter.h">
+      <Filter>filesys</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="file_iterator.cpp">
-      <Filter>filesys</Filter>
-    </ClCompile>
     <ClCompile Include="sha512.cpp">
       <Filter>crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="thread_pool.cpp">
-      <Filter>threading</Filter>
     </ClCompile>
     <ClCompile Include="hash_maker.cpp">
       <Filter>crypto</Filter>
@@ -53,8 +47,17 @@
     <ClCompile Include="worker.cpp">
       <Filter>threading</Filter>
     </ClCompile>
-    <ClCompile Include="progress_bar.cpp">
+    <ClCompile Include="thread_manager.cpp">
       <Filter>threading</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="file_mapper.cpp">
+      <Filter>filesys</Filter>
+    </ClCompile>
+    <ClCompile Include="output_file_formatter.cpp">
+      <Filter>filesys</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

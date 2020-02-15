@@ -19,19 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="file_iterator.cpp" />
+    <ClCompile Include="file_mapper.cpp" />
     <ClCompile Include="hash_maker.cpp" />
-    <ClCompile Include="progress_bar.cpp" />
+    <ClCompile Include="output_file_formatter.cpp" />
     <ClCompile Include="sha512.cpp" />
-    <ClCompile Include="thread_pool.cpp" />
+    <ClCompile Include="thread_manager.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="worker.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="file_iterator.h" />
+    <ClInclude Include="file_mapper.h" />
     <ClInclude Include="hash_maker.h" />
-    <ClInclude Include="progress_bar.h" />
+    <ClInclude Include="output_file_formatter.h" />
     <ClInclude Include="sha512.h" />
-    <ClInclude Include="thread_pool.h" />
+    <ClInclude Include="thread_manager.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="worker.h" />
   </ItemGroup>
@@ -127,7 +128,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -135,6 +136,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ExternalSdk)include;</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,7 +149,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -155,6 +157,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ExternalSdk)include;</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -1,45 +1,37 @@
 ﻿#pragma once
 
-#include "file_iterator.h"
-
-#include <vector>
 #include <mutex>
 #include <atomic>
+
+#include "file_mapper.h"
+
+#ifdef _DEBUG
+#   define LOG(msg) { std::lock_guard<std::mutex> lock(m_console_mutex); std::cout << msg << std::endl; }
+#else
+#   define LOG(msg)
+#endif
 
 namespace builder::threading
 {
     class Worker
     {
+        
     private:
-        std::mutex&                        m_file_iterator_mutex; 
-        std::mutex&                        m_global_hashes_mutex;
-        std::mutex&                        m_console_mutex;
-        filesys::FileIterator&             m_file_iterator;
-        std::vector<utils::BinaryBuffer>&  m_global_hashes;
-
-        std::atomic_bool&                  m_stop_pool;
-        std::atomic_uint32_t&              m_total_blocks_processed;
-
-        uint32_t m_blocks_processed_on_iteration;
-
-        void readBlocks();
-        void calculateHashes();
-        void flushHashes();
+        std::mutex&           m_console_mutex;
+        std::atomic_uint64_t& m_current_block_id;
+        filesys::FileMapper&  m_input_mapper;
+        filesys::FileMapper&  m_output_mapper;
 
     public:
+
+        // TODO: Проверить все конструкторы на консистентность
         Worker
         (
-            std::mutex&                        file_iterator_mutex,
-            std::mutex&                        global_hashes_mutex,
-            filesys::FileIterator&             file_iterator,
-            std::vector<utils::BinaryBuffer>&  hashes,
-            std::atomic_bool&                  stop_flag,
-            std::atomic_uint32_t&              blocks_processed,
-            std::mutex&                        console_mutex
+            std::mutex&           console_mutex,
+            std::atomic_uint64_t& current_block_id,
+            filesys::FileMapper&  input_mapper,
+            filesys::FileMapper&  output_mapper
         );
-
-        std::vector<filesys::BinaryBlock> m_local_blocks;
-        std::vector<filesys::BinaryBlock> m_local_hashes;
 
         void run();
     };

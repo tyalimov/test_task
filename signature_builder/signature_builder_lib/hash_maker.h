@@ -8,13 +8,11 @@ namespace builder::crypto
     class HashMaker
     {
     private:
-        utils::BinaryBufferPtr  m_data;
-        Sha512Context           m_context;
-        SHA512_HASH             m_digest;
+        Sha512Context m_context;
+        SHA512_HASH   m_digest;
     public:
-        explicit HashMaker(const utils::BinaryBufferPtr& data);
-        explicit HashMaker(const utils::BinaryBuffer& data);
+        HashMaker(uint8_t *data, uint64_t size);
 
-        utils::BinaryBufferPtr getHash() const;
+        [[nodiscard]] SHA512_HASH getHash() const;
     };
 }
