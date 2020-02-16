@@ -4,6 +4,8 @@
 #include <thread_manager.h>
 #include <boost/format.hpp>
 
+#if 1
+
 namespace builder::argparse
 {
     void CommandLineManager::readParameters()
@@ -13,8 +15,8 @@ namespace builder::argparse
             (DESCR_INPUT   , po::value<std::string>(&input_file) , "Path to input file to calculate signature")
             (DESCR_OUTPUT  , po::value<std::string>(&output_file), "Path to output file to store signature")
             (DESCR_BLOCK   , po::value<uint64_t>(&block_size)    , "Block size to read from file (optional)")
-            (DESCR_WORKERS , po::value<uint32_t>(&workers_count) , "Maximum number of working threads (optional)")
-            ;
+            (DESCR_WORKERS , po::value<uint32_t>(&workers_count) , "Maximum number of working threads (optional)");
+
         po::parsed_options parsed_options = po::command_line_parser(args_count, args_list).options(description).run();
         po::store(parsed_options, variables_map);
         po::notify(variables_map);
@@ -69,3 +71,6 @@ namespace builder::argparse
         assignValues();
     }
 }
+
+
+#endif

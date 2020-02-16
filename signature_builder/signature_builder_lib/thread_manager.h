@@ -6,7 +6,6 @@
 
 #include <thread>
 #include <mutex>
-#include <atomic>
 
 
 #ifdef _DEBUG
@@ -21,24 +20,37 @@
 #   define UPDATE_PROGRESS_BAR()
 #endif
 
+#ifdef _DEBUG
+#   define LOG_MAIN(msg)                                    \
+    {                                                       \
+        std::lock_guard<std::mutex> lock(m_console_mutex);  \
+        std::cout << "Main - ";                             \
+        std::cout << msg << std::endl;                      \
+    }
+#else
+#   define LOG(msg)
+#endif
+
 namespace builder::threading
 {
     class ThreadManager
     {
     private:
-
         std::vector<Worker>      m_workers;
         std::vector<std::thread> m_threads;
-        std::mutex               m_console_mutex;
-        std::atomic_bool         m_stop_pool;
 
-        filesys::FileMapper      m_input_mapper;
-        filesys::FileMapper      m_output_mapper;
+        filesys::FileMapper m_input_mapper;
+        filesys::FileMapper m_output_mapper;
 
-        uint32_t                 m_workers_count;
-        uint64_t                 m_total_blocks;
+        uint32_t m_workers_count;
+        
+        uint64_t m_total_blocks;
+        uint64_t m_current_limit;
+        uint64_t m_current_block_id;
 
-        std::atomic_uint64_t     m_current_block_id;
+        Barrier    m_barrier;
+        std::mutex m_block_id_mutex;
+        std::mutex m_console_mutex;
 
         void mapFiles();
         void createWorkers();
@@ -49,7 +61,7 @@ namespace builder::threading
         void updateProgressBar() const;
 
 #ifdef _DEBUG
-        void printStats();
+        void printStats() const;
 #endif
 
         [[nodiscard]] static uint64_t getBlocksCount(const utils::Path &input, uint64_t block_size);

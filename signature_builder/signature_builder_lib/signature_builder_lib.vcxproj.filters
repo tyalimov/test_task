@@ -36,6 +36,9 @@
     <ClInclude Include="output_file_formatter.h">
       <Filter>filesys</Filter>
     </ClInclude>
+    <ClInclude Include="barrier.h">
+      <Filter>threading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sha512.cpp">
@@ -58,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="output_file_formatter.cpp">
       <Filter>filesys</Filter>
+    </ClCompile>
+    <ClCompile Include="barrier.cpp">
+      <Filter>threading</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

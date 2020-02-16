@@ -14,13 +14,13 @@ TEST(file_mapper, unaligned_file) try
     Path file_name{ R"(file_mapper\unaligned.txt)" };
     FileMapper mapper{ file_name, 10 };
 
-    mapper.map();
+    mapper.map(0);
 
     ASSERT_EQ(mapper.getTotalBlocks(), 3);
 
     auto first_block  = mapper.getPtr(0);
     auto second_block = mapper.getPtr(1);
-    auto third_block = mapper.getPtr(2);
+    auto third_block  = mapper.getPtr(2);
 
     ASSERT_EQ(first_block.m_size, 10);
     ASSERT_EQ(second_block.m_size, 10);
@@ -42,7 +42,7 @@ TEST(file_mapper, aligned_file) try
     Path file_name{ R"(file_mapper\aligned.txt)" };
     FileMapper mapper{ file_name, 5 };
 
-    mapper.map();
+    mapper.map(0);
 
     ASSERT_EQ(mapper.getTotalBlocks(), 4);
 
@@ -72,7 +72,7 @@ TEST(file_mapper, out_of_range) try
     Path file_name{ R"(file_mapper\aligned.txt)" };
     FileMapper mapper{ file_name, 5 };
 
-    mapper.map();
+    mapper.map(0);
 
     ASSERT_EQ(mapper.getTotalBlocks(), 4);
 

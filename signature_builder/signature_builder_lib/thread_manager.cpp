@@ -4,11 +4,14 @@
 #include <iostream>
 #include <boost/format.hpp>
 
+#if 1
+
+// TODO: Сделать набор воркера, чтобы не менять каждый раз все
+
 namespace builder::threading
 {
     void ThreadManager::mapFiles()
     {
-        m_input_mapper.map();
         m_output_mapper.map();
     }
 
@@ -20,10 +23,13 @@ namespace builder::threading
             (
                 Worker
                 {
-                    m_console_mutex,
+                    m_barrier,
+                    m_current_limit,
                     m_current_block_id,
                     m_input_mapper,
-                    m_output_mapper
+                    m_output_mapper,
+                    m_block_id_mutex,
+                    m_console_mutex
                 }
             );
         }
@@ -53,7 +59,7 @@ namespace builder::threading
 
     void ThreadManager::updateProgressBar() const
     {
-        auto processed_blocks = m_current_block_id.load();
+        auto processed_blocks = m_current_block_id;
 
         double percentage = (double(processed_blocks) / double(m_total_blocks)) * 100.0;
         
@@ -64,8 +70,19 @@ namespace builder::threading
     }
 
 #ifdef _DEBUG
-    void ThreadManager::printStats()
+    void ThreadManager::printStats() const
     {
+        std::cout << boost::format
+        (
+            "m_workers_count ---- [%d]\n"
+            "m_total_blocks ----- [%d]\n"
+            "m_current_limit ---- [%d]\n"
+            "m_current_block_id - [%d]\n"
+        )
+            % m_workers_count
+            % m_total_blocks
+            % m_current_limit
+            % m_current_block_id;
     }
 #endif
 
@@ -88,12 +105,13 @@ namespace builder::threading
     ThreadManager::ThreadManager(const utils::Path &input, const utils::Path &output, uint64_t block_size, uint32_t workers_count)
         : m_workers()
         , m_threads()
-        , m_stop_pool(false)
         , m_input_mapper(input, block_size)
         , m_output_mapper(output, SHA512_DIGEST_SIZE)
         , m_workers_count(workers_count)
         , m_total_blocks(getBlocksCount(input, block_size))
+        , m_current_limit(0)
         , m_current_block_id(0)
+        , m_barrier(workers_count)
     {
         mapFiles();
         createWorkers();
@@ -104,12 +122,13 @@ namespace builder::threading
     ThreadManager::ThreadManager(const utils::Path &input, const utils::Path &output, uint64_t block_size)
         : m_workers()
         , m_threads()
-        , m_stop_pool(false)
         , m_input_mapper(input, block_size)
         , m_output_mapper(output, SHA512_DIGEST_SIZE)
         , m_workers_count(getOptimalWorkersCount())
         , m_total_blocks(getBlocksCount(input, block_size))
+        , m_current_limit(0)
         , m_current_block_id(0)
+        , m_barrier(getOptimalWorkersCount())
     {
         mapFiles();
         createWorkers();
@@ -119,14 +138,36 @@ namespace builder::threading
 
     void ThreadManager::run() try
     {
-        while (m_current_block_id.load() < m_input_mapper.getTotalBlocks())
+        // mapNextBlocksBasket
+        // updateMetadata
+        // wakeWorkers
+        // waitWorkers
+        while (m_current_limit < m_total_blocks)
         {
-            UPDATE_PROGRESS_BAR()
+            UPDATE_PROGRESS_BAR();
 
-            // TODO: Убрать это позорище
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            LOG(boost::format("main trying to map new bundle. | m_current_block_id=[%d]") % m_current_block_id);
+
+            auto blocks_mapped = m_input_mapper.map(m_current_block_id);
+
+            m_current_limit = m_current_block_id + blocks_mapped;
+
+            LOG(boost::format("main - create mapping for block=[%d], limit=[%d], total=[%d]")
+                % m_current_block_id
+                % m_current_limit
+                % m_total_blocks);
+
+            m_barrier.reset();
+            m_barrier.wakeSlaves();
+
+            LOG("main thread finished mapping, waiting workers");
+            m_barrier.wait();
         }
 
+        UPDATE_PROGRESS_BAR();
+
+        m_barrier.stop();
+        m_barrier.wakeSlaves();
         joinAll();
     }
     catch (const std::exception& ex)
@@ -137,3 +178,5 @@ namespace builder::threading
             % ex.what();
     }
 }
+
+#endif

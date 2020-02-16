@@ -1,10 +1,11 @@
-#pragma once
+﻿#pragma once
 
 #include <mutex>
 #include <condition_variable>
 
 namespace builder::threading
 {
+    // TODO: темплейты и отдельный класс BarrierVal с проверкой существования инкремента
     class Barrier
     {
     private:
@@ -18,7 +19,6 @@ namespace builder::threading
         uint32_t m_slaves_count;
         uint32_t m_notifications_count;
 
-        //uint64_t 
 
     public:
         explicit Barrier(uint32_t slaves_count);
