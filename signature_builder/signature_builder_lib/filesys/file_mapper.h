@@ -70,11 +70,9 @@ namespace builder::filesys
         void map();
         void flush() const;
 
-        [[nodiscard]] uint64_t    map(uint64_t start_block_id);
-        [[nodiscard]] uint64_t    getTotalBlocks() const;
-        [[nodiscard]] MappedBlock getPtr(uint64_t block_id) const;
-
-        // TODO: В отдельный класс
+        [[nodiscard]] uint64_t     map(uint64_t start_block_id);
+        [[nodiscard]] uint64_t     getTotalBlocks() const;
+        [[nodiscard]] MappedBlock  getPtr(uint64_t block_id) const;
         [[nodiscard]] uint8_t     *getRawPtr(uint64_t block_id) const;
     };
 

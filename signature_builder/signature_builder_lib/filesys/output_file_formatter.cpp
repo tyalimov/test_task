@@ -47,7 +47,7 @@ namespace builder::filesys
         fillWithZeros();
     }
 
-    FileNotOpened::FileNotOpened(const std::string &filename)
+    FileNotOpened::FileNotOpened(const std::string& filename)
         : m_message("Error while opening file - [")
     {
         m_message += filename;

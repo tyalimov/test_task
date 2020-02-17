@@ -5,8 +5,6 @@
 
 #include <boost/format.hpp>
 
-// TODO: Сделать набор воркера, чтобы не менять каждый раз все
-
 namespace builder::threading
 {
     void FileHashBuilder::mapFiles()
@@ -94,14 +92,14 @@ namespace builder::threading
             : 1;
     }
 
-    uint64_t FileHashBuilder::getBlocksCount(const utils::Path &input, uint64_t block_size)
+    uint64_t FileHashBuilder::getBlocksCount(const utils::Path& input, uint64_t block_size)
     {
         auto file_size = static_cast<uint64_t>(utils::fs::file_size(input));
 
         return utils::AlignGreater(file_size, block_size);
     }
 
-    FileHashBuilder::FileHashBuilder(const utils::Path &input, const utils::Path &output, uint64_t block_size, uint32_t workers_count)
+    FileHashBuilder::FileHashBuilder(const utils::Path& input, const utils::Path &output, uint64_t block_size, uint32_t workers_count)
         : m_workers()
         , m_threads()
         , m_input_mapper(input, block_size)

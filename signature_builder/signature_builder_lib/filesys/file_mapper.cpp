@@ -100,7 +100,7 @@ namespace builder::filesys
         return m_file_ptr + block_id * m_block_size;
     }
 
-    FileNotMapped::FileNotMapped(const std::string &filename)
+    FileNotMapped::FileNotMapped(const std::string& filename)
         : m_message("Error mapping file - [")
     {
         m_message += filename;

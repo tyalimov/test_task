@@ -7,16 +7,16 @@
 
 namespace builder::threading
 {
-    std::tuple<bool, uint64_t> Worker::getNextBlockId() const noexcept
+    std::tuple<WorkerAction, uint64_t> Worker::getNextBlockId() const noexcept
     {
         std::lock_guard<std::mutex> lock(m_block_id_mutex);
 
         if (m_current_block_id < m_current_limit)
         {
-            return std::make_tuple(true, m_current_block_id++);
+            return std::make_tuple(WorkerAction::kCalcHashes, m_current_block_id++);
         }
 
-        return std::make_tuple(false, uint64_t(0));
+        return std::make_tuple(WorkerAction::kWaitMaster, uint64_t(0));
     }
 
     Worker::Worker
@@ -47,7 +47,7 @@ namespace builder::threading
         {
             auto [status, taken_block_id] = getNextBlockId();
 
-            if (!status)
+            if (status == WorkerAction::kWaitMaster)
             {
                 LOG("Reached limit, notifying master");
 
