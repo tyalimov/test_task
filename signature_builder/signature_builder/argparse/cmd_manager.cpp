@@ -1,7 +1,7 @@
 #include "cmd_manager.h"
 
-#include <file_hash_builder.h>
-#include <utils.h>
+#include <threading/file_hash_builder.h>
+#include <misc/utils.h>
 
 #include <boost/format.hpp>
 

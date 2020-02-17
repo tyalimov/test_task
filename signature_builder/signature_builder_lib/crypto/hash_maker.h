@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "utils.h"
-#include "sha512.h"
+#include <misc/utils.h>
+#include <third_party/sha512.h>
 
 namespace builder::crypto
 {

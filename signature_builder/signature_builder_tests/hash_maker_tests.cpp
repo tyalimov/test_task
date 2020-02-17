@@ -1,5 +1,5 @@
-#include <utils.h>
-#include <hash_maker.h>
+#include <misc/utils.h>
+#include <crypto/hash_maker.h>
 
 #include <fstream>
 

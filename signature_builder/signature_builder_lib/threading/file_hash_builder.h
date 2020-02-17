@@ -1,7 +1,8 @@
 ﻿#pragma once
 
-#include "utils.h"
-#include "file_mapper.h"
+#include <misc/utils.h>
+#include <filesys/file_mapper.h>
+
 #include "worker.h"
 
 #include <thread>

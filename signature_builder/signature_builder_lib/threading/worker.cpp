@@ -1,5 +1,5 @@
 ﻿#include "worker.h"
-#include "hash_maker.h"
+#include <crypto/hash_maker.h>
 
 #include <iostream>
 

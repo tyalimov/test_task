@@ -1,7 +1,7 @@
-﻿#include "cmd_manager.h"
-#include "utils.h"
+﻿#include <argparse/cmd_manager.h>
+#include <misc/utils.h>
 
-#include <file_hash_builder.h>
+#include <threading/file_hash_builder.h>
 
 #include <iostream>
 #include <chrono>

@@ -13,57 +13,60 @@
     <Filter Include="misc">
       <UniqueIdentifier>{80987201-7dcb-405e-ae00-9bd38bce3187}</UniqueIdentifier>
     </Filter>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{95873c7a-f7f2-4aaa-b2bc-1bb91fae95d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="sha512.h">
+    <ClCompile Include="crypto\hash_maker.cpp">
       <Filter>crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
+    </ClCompile>
+    <ClCompile Include="filesys\file_mapper.cpp">
+      <Filter>filesys</Filter>
+    </ClCompile>
+    <ClCompile Include="filesys\output_file_formatter.cpp">
+      <Filter>filesys</Filter>
+    </ClCompile>
+    <ClCompile Include="misc\utils.cpp">
       <Filter>misc</Filter>
-    </ClInclude>
-    <ClInclude Include="hash_maker.h">
-      <Filter>crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="worker.h">
+    </ClCompile>
+    <ClCompile Include="third_party\sha512.cpp">
+      <Filter>third_party</Filter>
+    </ClCompile>
+    <ClCompile Include="threading\barrier.cpp">
       <Filter>threading</Filter>
-    </ClInclude>
-    <ClInclude Include="file_mapper.h">
-      <Filter>filesys</Filter>
-    </ClInclude>
-    <ClInclude Include="output_file_formatter.h">
-      <Filter>filesys</Filter>
-    </ClInclude>
-    <ClInclude Include="barrier.h">
+    </ClCompile>
+    <ClCompile Include="threading\file_hash_builder.cpp">
       <Filter>threading</Filter>
-    </ClInclude>
-    <ClInclude Include="file_hash_builder.h">
+    </ClCompile>
+    <ClCompile Include="threading\worker.cpp">
       <Filter>threading</Filter>
-    </ClInclude>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="sha512.cpp">
+    <ClInclude Include="crypto\hash_maker.h">
       <Filter>crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="hash_maker.cpp">
-      <Filter>crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="worker.cpp">
-      <Filter>threading</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.cpp">
+    </ClInclude>
+    <ClInclude Include="filesys\file_mapper.h">
+      <Filter>filesys</Filter>
+    </ClInclude>
+    <ClInclude Include="filesys\output_file_formatter.h">
+      <Filter>filesys</Filter>
+    </ClInclude>
+    <ClInclude Include="misc\utils.h">
       <Filter>misc</Filter>
-    </ClCompile>
-    <ClCompile Include="file_mapper.cpp">
-      <Filter>filesys</Filter>
-    </ClCompile>
-    <ClCompile Include="output_file_formatter.cpp">
-      <Filter>filesys</Filter>
-    </ClCompile>
-    <ClCompile Include="barrier.cpp">
+    </ClInclude>
+    <ClInclude Include="third_party\sha512.h">
+      <Filter>third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="threading\barrier.h">
       <Filter>threading</Filter>
-    </ClCompile>
-    <ClCompile Include="file_hash_builder.cpp">
+    </ClInclude>
+    <ClInclude Include="threading\file_hash_builder.h">
       <Filter>threading</Filter>
-    </ClCompile>
+    </ClInclude>
+    <ClInclude Include="threading\worker.h">
+      <Filter>threading</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
