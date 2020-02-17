@@ -11,8 +11,8 @@ namespace builder::crypto
         Sha512Finalise(&m_context, &m_digest);
     }
 
-    SHA512_HASH HashMaker::getHash() const
+    Digest HashMaker::getHash() const noexcept
     {
-        return m_digest;
+        return Digest(m_digest.bytes, m_digest.bytes + sizeof(m_digest.bytes));
     }
 }

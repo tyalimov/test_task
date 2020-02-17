@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="misc">
-      <UniqueIdentifier>{62004dd6-4524-46d9-b67a-562e5208f189}</UniqueIdentifier>
-    </Filter>
     <Filter Include="argparse">
       <UniqueIdentifier>{3d5f02dd-fa8b-4d08-a95a-d2b13cbf9672}</UniqueIdentifier>
     </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{62004dd6-4524-46d9-b67a-562e5208f189}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>misc</Filter>
-    </ClCompile>
-    <ClCompile Include="cmd_manager.cpp">
+    <ClCompile Include="argparse\cmd_manager.cpp">
       <Filter>argparse</Filter>
     </ClCompile>
+    <ClCompile Include="main\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cmd_manager.h">
+    <ClInclude Include="argparse\cmd_manager.h">
       <Filter>argparse</Filter>
     </ClInclude>
   </ItemGroup>

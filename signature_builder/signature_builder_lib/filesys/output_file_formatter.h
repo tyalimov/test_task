@@ -1,21 +1,28 @@
 ﻿#pragma once
 
-#include "utils.h"
+#include <misc/utils.h>
 
 #include <fstream>
 
-
 namespace builder::filesys
 {
-    constexpr uint64_t kFillingBlockSize{ 15 * 1024 * 1024 };
+    namespace constants
+    {
+        enum Constants
+            : uint64_t
+        {
+            kFillingBlockSize = 15 * 1024 * 1024
+        };
+    }
     
     class OutputFileFormatter
     {
     private:
-        static const char kDataToFill[kFillingBlockSize];
+        static const char kDataToFill[constants::kFillingBlockSize];
         
         std::ofstream     m_file;
         uint64_t          m_file_size;
+        utils::Path       m_file_name;
 
         void checkFileOpening() const;
         void fillWithZeros();
@@ -28,7 +35,12 @@ namespace builder::filesys
     class FileNotOpened final
         : public std::exception
     {
+    private:
+        mutable std::string m_message;
+
     public:
-        [[nodiscard]] const char* what() const override final { return "Output file was not opened"; }
+        explicit FileNotOpened(const std::string& filename);
+
+        [[nodiscard]] const char *what() const noexcept override final;
     };
 }

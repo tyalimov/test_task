@@ -1,10 +1,10 @@
-﻿#include <gtest/gtest.h>
+﻿#include <filesys/file_mapper.h>
+#include <misc/utils.h>
 
-#include "file_mapper.h"
-#include "utils.h"
+#include <gtest/gtest.h>
 
-// TODO: Добавить нормальные пути к бусту
-// TODO: Проверка, что на ласт блок возвращается нормальный сайз
+// discarding [[nodiscard]]
+#pragma warning( disable:4834 )
 
 using namespace builder::filesys;
 using namespace builder::utils;
@@ -14,13 +14,13 @@ TEST(file_mapper, unaligned_file) try
     Path file_name{ R"(file_mapper\unaligned.txt)" };
     FileMapper mapper{ file_name, 10 };
 
-    mapper.map();
+    mapper.map(0);
 
     ASSERT_EQ(mapper.getTotalBlocks(), 3);
 
     auto first_block  = mapper.getPtr(0);
     auto second_block = mapper.getPtr(1);
-    auto third_block = mapper.getPtr(2);
+    auto third_block  = mapper.getPtr(2);
 
     ASSERT_EQ(first_block.m_size, 10);
     ASSERT_EQ(second_block.m_size, 10);
@@ -28,7 +28,7 @@ TEST(file_mapper, unaligned_file) try
 
     ASSERT_EQ("hello from", std::string(reinterpret_cast<char*>(first_block.m_ptr),  first_block.m_size));
     ASSERT_EQ(" file mapp", std::string(reinterpret_cast<char*>(second_block.m_ptr), second_block.m_size));
-    ASSERT_EQ("er",        std::string(reinterpret_cast<char*>(third_block.m_ptr),  third_block.m_size));
+    ASSERT_EQ("er",         std::string(reinterpret_cast<char*>(third_block.m_ptr),  third_block.m_size));
 }
 catch (const std::exception& ex)
 {
@@ -42,7 +42,7 @@ TEST(file_mapper, aligned_file) try
     Path file_name{ R"(file_mapper\aligned.txt)" };
     FileMapper mapper{ file_name, 5 };
 
-    mapper.map();
+    mapper.map(0);
 
     ASSERT_EQ(mapper.getTotalBlocks(), 4);
 
@@ -72,7 +72,7 @@ TEST(file_mapper, out_of_range) try
     Path file_name{ R"(file_mapper\aligned.txt)" };
     FileMapper mapper{ file_name, 5 };
 
-    mapper.map();
+    mapper.map(0);
 
     ASSERT_EQ(mapper.getTotalBlocks(), 4);
 
@@ -96,7 +96,6 @@ TEST(file_mapper, file_not_mapped) try
 {
     Path file_name{ R"(file_mapper\aligned.txt)" };
     FileMapper mapper{ file_name, 5 };
-
 
     ASSERT_EQ(mapper.getTotalBlocks(), 4);
 
