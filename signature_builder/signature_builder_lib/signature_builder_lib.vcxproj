@@ -24,7 +24,7 @@
     <ClCompile Include="hash_maker.cpp" />
     <ClCompile Include="output_file_formatter.cpp" />
     <ClCompile Include="sha512.cpp" />
-    <ClCompile Include="thread_manager.cpp" />
+    <ClCompile Include="file_hash_builder.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="worker.cpp" />
   </ItemGroup>
@@ -34,7 +34,7 @@
     <ClInclude Include="hash_maker.h" />
     <ClInclude Include="output_file_formatter.h" />
     <ClInclude Include="sha512.h" />
-    <ClInclude Include="thread_manager.h" />
+    <ClInclude Include="file_hash_builder.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="worker.h" />
   </ItemGroup>

@@ -87,6 +87,11 @@ namespace builder::argparse
         m_message += "]";
     }
 
+    const char *FileNotFound::what() const noexcept
+    {
+        return m_message.c_str();
+    }
+
     MissingEssentialOptions::MissingEssentialOptions(const po::options_description& description)
         : m_message()
     {
@@ -94,5 +99,10 @@ namespace builder::argparse
         ss << description;
 
         m_message = ss.str();
+    }
+
+    const char *MissingEssentialOptions::what() const noexcept
+    {
+        return m_message.c_str();
     }
 }

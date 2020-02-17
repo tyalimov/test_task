@@ -5,7 +5,6 @@
 
 namespace builder::threading
 {
-    // TODO: темплейты и отдельный класс BarrierVal с проверкой существования инкремента
     class Barrier
     {
     private:

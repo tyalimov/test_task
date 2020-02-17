@@ -1,21 +1,20 @@
-﻿#include "thread_manager.h"
+﻿#include "file_hash_builder.h"
 #include "hash_maker.h"
 
 #include <iostream>
-#include <boost/format.hpp>
 
-#if 1
+#include <boost/format.hpp>
 
 // TODO: Сделать набор воркера, чтобы не менять каждый раз все
 
 namespace builder::threading
 {
-    void ThreadManager::mapFiles()
+    void FileHashBuilder::mapFiles()
     {
         m_output_mapper.map();
     }
 
-    void ThreadManager::createWorkers()
+    void FileHashBuilder::createWorkers()
     {
         for (auto i = uint32_t(0); i < m_workers_count; i++)
         {
@@ -35,7 +34,7 @@ namespace builder::threading
         }
     }
 
-    void ThreadManager::createThreads()
+    void FileHashBuilder::createThreads()
     {
         for (auto& worker : m_workers)
         {
@@ -46,7 +45,7 @@ namespace builder::threading
         }
     }
 
-    void ThreadManager::joinAll()
+    void FileHashBuilder::joinAll()
     {
         for (auto& thread : m_threads)
         {
@@ -57,11 +56,11 @@ namespace builder::threading
         }
     }
 
-    void ThreadManager::updateProgressBar() const
+    void FileHashBuilder::updateProgressBar() const
     {
         auto processed_blocks = m_current_block_id;
-
-        double percentage = (double(processed_blocks) / double(m_total_blocks)) * 100.0;
+        auto percentage       = (static_cast<double>(processed_blocks) / 
+                                 static_cast<double>(m_total_blocks)) * 100.0;
         
         std::cout << boost::format("\rblocks processed: %d/%d | %d%%       ")
             % processed_blocks
@@ -70,7 +69,7 @@ namespace builder::threading
     }
 
 #ifdef _DEBUG
-    void ThreadManager::printStats() const
+    void FileHashBuilder::printStats() const
     {
         std::cout << boost::format
         (
@@ -86,7 +85,7 @@ namespace builder::threading
     }
 #endif
 
-    uint32_t ThreadManager::getOptimalWorkersCount()
+    uint32_t FileHashBuilder::getOptimalWorkersCount()
     {
         auto hardware_concurrency = std::thread::hardware_concurrency();
 
@@ -95,18 +94,18 @@ namespace builder::threading
             : 1;
     }
 
-    uint64_t ThreadManager::getBlocksCount(const utils::Path &input, uint64_t block_size)
+    uint64_t FileHashBuilder::getBlocksCount(const utils::Path &input, uint64_t block_size)
     {
         auto file_size = static_cast<uint64_t>(utils::fs::file_size(input));
 
         return utils::AlignGreater(file_size, block_size);
     }
 
-    ThreadManager::ThreadManager(const utils::Path &input, const utils::Path &output, uint64_t block_size, uint32_t workers_count)
+    FileHashBuilder::FileHashBuilder(const utils::Path &input, const utils::Path &output, uint64_t block_size, uint32_t workers_count)
         : m_workers()
         , m_threads()
         , m_input_mapper(input, block_size)
-        , m_output_mapper(output, SHA512_DIGEST_SIZE)
+        , m_output_mapper(output, utils::constants::kDigestSize)
         , m_workers_count(workers_count)
         , m_total_blocks(getBlocksCount(input, block_size))
         , m_current_limit(0)
@@ -119,34 +118,14 @@ namespace builder::threading
         createThreads();
     }
 
-    ThreadManager::ThreadManager(const utils::Path &input, const utils::Path &output, uint64_t block_size)
-        : m_workers()
-        , m_threads()
-        , m_input_mapper(input, block_size)
-        , m_output_mapper(output, SHA512_DIGEST_SIZE)
-        , m_workers_count(getOptimalWorkersCount())
-        , m_total_blocks(getBlocksCount(input, block_size))
-        , m_current_limit(0)
-        , m_current_block_id(0)
-        , m_barrier(getOptimalWorkersCount())
+    void FileHashBuilder::run() try
     {
-        mapFiles();
-        createWorkers();
-        DBG_PRINT_STATS()
-        createThreads();
-    }
-
-    void ThreadManager::run() try
-    {
-        // mapNextBlocksBasket
-        // updateMetadata
-        // wakeWorkers
-        // waitWorkers
         while (m_current_limit < m_total_blocks)
         {
             UPDATE_PROGRESS_BAR();
 
-            LOG(boost::format("main trying to map new bundle. | m_current_block_id=[%d]") % m_current_block_id);
+            LOG(boost::format("main trying to map new bundle. | m_current_block_id=[%d]") 
+                % m_current_block_id);
 
             auto blocks_mapped = m_input_mapper.map(m_current_block_id);
 
@@ -178,5 +157,3 @@ namespace builder::threading
             % ex.what();
     }
 }
-
-#endif

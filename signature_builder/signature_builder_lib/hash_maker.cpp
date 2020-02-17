@@ -13,6 +13,10 @@ namespace builder::crypto
 
     std::vector<uint8_t> HashMaker::getHash() const noexcept
     {
-        return std::vector<uint8_t>(m_digest.bytes, m_digest.bytes + sizeof(m_digest.bytes));
+        return std::vector<uint8_t>
+        (
+            m_digest.bytes, 
+            m_digest.bytes + sizeof(m_digest.bytes)
+        );
     }
 }

@@ -7,12 +7,19 @@
 
 namespace builder::filesys
 {
-    constexpr uint64_t kFillingBlockSize{ 15 * 1024 * 1024 };
+    namespace constants
+    {
+        enum Constants
+            : uint64_t
+        {
+            kFillingBlockSize = 15 * 1024 * 1024
+        };
+    }
     
     class OutputFileFormatter
     {
     private:
-        static const char kDataToFill[kFillingBlockSize];
+        static const char kDataToFill[constants::kFillingBlockSize];
         
         std::ofstream     m_file;
         uint64_t          m_file_size;
@@ -29,6 +36,6 @@ namespace builder::filesys
         : public std::exception
     {
     public:
-        [[nodiscard]] const char* what() const override final { return "Output file was not opened"; }
+        [[nodiscard]] const char *what() const noexcept override final;
     };
 }

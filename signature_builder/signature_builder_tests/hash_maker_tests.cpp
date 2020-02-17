@@ -1,10 +1,9 @@
-#include <gtest/gtest.h>
-
 #include <utils.h>
 #include <hash_maker.h>
 
-#include <vector>
 #include <fstream>
+
+#include <gtest/gtest.h>
 
 using namespace builder;
 
@@ -22,7 +21,7 @@ void TestHashMaker(const std::string& expected, const Path& file) try
 
     EXPECT_EQ
     (
-        utils::ToHex(std::string((char*)hash.bytes, SHA512_DIGEST_SIZE)), 
+        utils::ToHex(std::string((char*)hash.data(), utils::constants::kDigestSize)), 
         expected
     );
 }

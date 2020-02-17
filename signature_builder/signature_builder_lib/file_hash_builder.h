@@ -33,7 +33,7 @@
 
 namespace builder::threading
 {
-    class ThreadManager
+    class FileHashBuilder
     {
     private:
         std::vector<Worker>      m_workers;
@@ -57,24 +57,32 @@ namespace builder::threading
         void createThreads();
         void joinAll();
 
-        // task management
         void updateProgressBar() const;
 
 #ifdef _DEBUG
         void printStats() const;
 #endif
 
-        [[nodiscard]] static uint64_t getBlocksCount(const utils::Path &input, uint64_t block_size);
+        [[nodiscard]] static uint64_t getBlocksCount
+        (
+            const utils::Path& input, 
+            uint64_t block_size
+        );
 
     public:
-        ThreadManager(const ThreadManager& rhs)             = delete;
-        ThreadManager(ThreadManager&& rhs)                  = delete;
-        ThreadManager()                                     = delete;
-        ThreadManager operator = (const ThreadManager& rhs) = delete;
-        ThreadManager operator = (ThreadManager&&)          = delete;
+        FileHashBuilder(const FileHashBuilder& rhs)             = delete;
+        FileHashBuilder(FileHashBuilder&& rhs)                  = delete;
+        FileHashBuilder()                                       = delete;
+        FileHashBuilder operator = (const FileHashBuilder& rhs) = delete;
+        FileHashBuilder operator = (FileHashBuilder&&)          = delete;
 
-        ThreadManager(const utils::Path& input, const utils::Path& output, uint64_t block_size, uint32_t workers_count);
-        ThreadManager(const utils::Path& input, const utils::Path& output, uint64_t block_size);
+        FileHashBuilder
+        (
+            const utils::Path& input, 
+            const utils::Path& output, 
+            uint64_t block_size, 
+            uint32_t workers_count
+        );
 
         [[nodiscard]] static uint32_t getOptimalWorkersCount();
 

@@ -64,10 +64,8 @@ namespace builder::argparse
     public:
         explicit FileNotFound(const std::string& filename);
 
-        [[nodiscard]] const char *what() const noexcept override final
-        {
-            return m_message.c_str();
-        }
+        [[nodiscard]] const char* what() const noexcept override final;
+
     };
 
     class MissingEssentialOptions final
@@ -79,9 +77,6 @@ namespace builder::argparse
     public:
         explicit MissingEssentialOptions(const po::options_description& description);
 
-        [[nodiscard]] const char *what() const noexcept override final
-        {
-            return m_message.c_str();
-        }
+        [[nodiscard]] const char* what() const noexcept override final;
     };
 }

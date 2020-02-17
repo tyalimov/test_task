@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include <mutex>
-#include <atomic>
-#include <tuple>
-
 #include "file_mapper.h"
 #include "barrier.h"
+
+#include <mutex>
+#include <tuple>
+
 
 #ifdef _DEBUG
 #   define LOG(msg)                                                       \

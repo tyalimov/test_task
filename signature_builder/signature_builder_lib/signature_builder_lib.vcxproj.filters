@@ -27,9 +27,6 @@
     <ClInclude Include="worker.h">
       <Filter>threading</Filter>
     </ClInclude>
-    <ClInclude Include="thread_manager.h">
-      <Filter>threading</Filter>
-    </ClInclude>
     <ClInclude Include="file_mapper.h">
       <Filter>filesys</Filter>
     </ClInclude>
@@ -37,6 +34,9 @@
       <Filter>filesys</Filter>
     </ClInclude>
     <ClInclude Include="barrier.h">
+      <Filter>threading</Filter>
+    </ClInclude>
+    <ClInclude Include="file_hash_builder.h">
       <Filter>threading</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,9 +50,6 @@
     <ClCompile Include="worker.cpp">
       <Filter>threading</Filter>
     </ClCompile>
-    <ClCompile Include="thread_manager.cpp">
-      <Filter>threading</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>misc</Filter>
     </ClCompile>
@@ -63,6 +60,9 @@
       <Filter>filesys</Filter>
     </ClCompile>
     <ClCompile Include="barrier.cpp">
+      <Filter>threading</Filter>
+    </ClCompile>
+    <ClCompile Include="file_hash_builder.cpp">
       <Filter>threading</Filter>
     </ClCompile>
   </ItemGroup>

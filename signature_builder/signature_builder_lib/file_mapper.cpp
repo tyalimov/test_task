@@ -1,6 +1,5 @@
 ﻿#include "file_mapper.h"
 
-constexpr uint64_t k1Gb{ 1024 * 1024 * 1024 };
 
 namespace builder::filesys
 {
@@ -15,8 +14,6 @@ namespace builder::filesys
 
     void FileMapper::map()
     {
-        //flush();
-
         m_mapped_region.reset();
 
         m_mapped_region = std::make_unique<bip::mapped_region>
@@ -35,16 +32,18 @@ namespace builder::filesys
     uint64_t FileMapper::map(uint64_t start_block_id)
     {
         uint64_t page_number  = (start_block_id * m_block_size) / m_page_size;
-        uint64_t page_offset = page_number * m_page_size;
-        uint64_t mapping_size = m_file_size - page_offset > k1Gb
-            ? k1Gb
-            : m_file_size - page_offset;
+        uint64_t page_offset  = page_number * m_page_size;
+        uint64_t mapping_size = m_file_size - page_offset > utils::constants::k1Gb
+                                    ? utils::constants::k1Gb
+                                    : m_file_size - page_offset;
 
         uint64_t offset_from_nearest_page = start_block_id * m_block_size - page_offset;
 
-        uint64_t available_blocks = utils::AlignGreater(mapping_size - offset_from_nearest_page, m_block_size);
-
-        //flush();
+        uint64_t available_blocks = utils::AlignGreater
+        (
+            mapping_size - offset_from_nearest_page, 
+            m_block_size
+        );
 
         m_mapped_region.reset();
 
@@ -62,7 +61,7 @@ namespace builder::filesys
         return available_blocks;
     }
 
-    void FileMapper::flush()
+    void FileMapper::flush() const
     {
         m_mapped_region->flush();
     }
@@ -87,15 +86,26 @@ namespace builder::filesys
         }
 
         uint64_t offset_from_nearest_page = requested_offser % m_page_size;
-        uint8_t  *ptr                     = m_file_ptr + (requested_offser / m_page_size) + offset_from_nearest_page;
+        
+        uint8_t *ptr  = m_file_ptr + (requested_offser / m_page_size) + offset_from_nearest_page;
 
         return block_id == m_blocks_count - 1 
             ? MappedBlock{ ptr, m_file_size - (block_id * m_block_size) }
             : MappedBlock{ ptr, m_block_size };
     }
 
-    uint8_t * FileMapper::getRawPtr(uint64_t block_id) const
+    uint8_t *FileMapper::getRawPtr(uint64_t block_id) const
     {
         return m_file_ptr + block_id * m_block_size;
+    }
+
+    const char *FileNotMapped::what() const
+    {
+        return "The file is not mapped yet";
+    }
+
+    const char *BlockOutOfRange::what() const
+    {
+        return "Block number out of range";
     }
 }

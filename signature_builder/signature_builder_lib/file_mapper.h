@@ -2,10 +2,10 @@
 
 #include "utils.h"
 
+#include <memory>
+
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/file_mapping.hpp>
-
-#include <memory>
 
 namespace builder::filesys
 {
@@ -54,16 +54,15 @@ namespace builder::filesys
         uint64_t           m_page_size;
         uint8_t           *m_file_ptr;
 
-        bip::file_mapping  m_file_mapping;
-        //bip::mapped_region m_mapped_region;
+        bip::file_mapping                   m_file_mapping;
         std::unique_ptr<bip::mapped_region> m_mapped_region;
-        MappingRange       m_current_range;
+        MappingRange                        m_current_range;
 
     public:
         FileMapper(const utils::Path& file_name, uint64_t block_size);
 
         void map();
-        void flush();
+        void flush() const;
 
         [[nodiscard]] uint64_t    map(uint64_t start_block_id);
         [[nodiscard]] uint64_t    getTotalBlocks() const;
@@ -77,14 +76,14 @@ namespace builder::filesys
         : public std::exception
     {
     public:
-        [[nodiscard]] const char* what() const override final { return "The file is not mapped yet"; }
+        [[nodiscard]] const char *what() const override final;
     };
 
     class BlockOutOfRange final
         : public std::exception
     {
     public:
-        [[nodiscard]] const char* what() const override final { return "Block number out of range"; }
+        [[nodiscard]] const char *what() const override final;
     };
 
 }

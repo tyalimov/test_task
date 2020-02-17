@@ -2,11 +2,11 @@
 #include "hash_maker.h"
 
 #include <iostream>
+
 #include <boost/format.hpp>
 
 namespace builder::threading
 {
-#if 1
     std::tuple<bool, uint64_t> Worker::getNextBlockId() const noexcept
     {
         std::lock_guard<std::mutex> lock(m_block_id_mutex);
@@ -60,7 +60,6 @@ namespace builder::threading
                 }
 
                 LOG("Waked up by master");
-                continue;
             }
             else
             {
@@ -69,11 +68,11 @@ namespace builder::threading
                     % m_input_mapper.getTotalBlocks()
                     % m_current_limit);
 
-                filesys::MappedBlock taken_block  = m_input_mapper.getPtr(taken_block_id);
-                uint8_t     *result_block         = m_output_mapper.getRawPtr(taken_block_id);
-                SHA512_HASH digest                = crypto::HashMaker(taken_block.m_ptr, taken_block.m_size).getHash();
+                auto taken_block  = m_input_mapper.getPtr(taken_block_id);
+                auto result_block = m_output_mapper.getRawPtr(taken_block_id);
+                auto digest       = crypto::HashMaker{ taken_block.m_ptr, taken_block.m_size }.getHash();
 
-                std::memcpy(result_block, digest.bytes, static_cast<size_t>(SHA512_DIGEST_SIZE));
+                std::memcpy(result_block, digest.data(), digest.size());
             }
         }
     }
@@ -83,5 +82,4 @@ namespace builder::threading
 
         std::cout << boost::format("failed - [%s]") % ex.what() << std::endl;
     }
-#endif
 }

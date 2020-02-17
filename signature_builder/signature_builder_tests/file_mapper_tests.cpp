@@ -1,10 +1,10 @@
-﻿#include <gtest/gtest.h>
-
-#include "file_mapper.h"
+﻿#include "file_mapper.h"
 #include "utils.h"
 
-// TODO: Добавить нормальные пути к бусту
-// TODO: Проверка, что на ласт блок возвращается нормальный сайз
+#include <gtest/gtest.h>
+
+// discarding [[nodiscard]]
+#pragma warning( disable:4834 )
 
 using namespace builder::filesys;
 using namespace builder::utils;
@@ -28,7 +28,7 @@ TEST(file_mapper, unaligned_file) try
 
     ASSERT_EQ("hello from", std::string(reinterpret_cast<char*>(first_block.m_ptr),  first_block.m_size));
     ASSERT_EQ(" file mapp", std::string(reinterpret_cast<char*>(second_block.m_ptr), second_block.m_size));
-    ASSERT_EQ("er",        std::string(reinterpret_cast<char*>(third_block.m_ptr),  third_block.m_size));
+    ASSERT_EQ("er",         std::string(reinterpret_cast<char*>(third_block.m_ptr),  third_block.m_size));
 }
 catch (const std::exception& ex)
 {
@@ -96,7 +96,6 @@ TEST(file_mapper, file_not_mapped) try
 {
     Path file_name{ R"(file_mapper\aligned.txt)" };
     FileMapper mapper{ file_name, 5 };
-
 
     ASSERT_EQ(mapper.getTotalBlocks(), 4);
 
