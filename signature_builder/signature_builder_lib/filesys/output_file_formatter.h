@@ -22,6 +22,7 @@ namespace builder::filesys
         
         std::ofstream     m_file;
         uint64_t          m_file_size;
+        utils::Path       m_file_name;
 
         void checkFileOpening() const;
         void fillWithZeros();
@@ -34,7 +35,12 @@ namespace builder::filesys
     class FileNotOpened final
         : public std::exception
     {
+    private:
+        mutable std::string m_message;
+
     public:
+        explicit FileNotOpened(const std::string& filename);
+
         [[nodiscard]] const char *what() const noexcept override final;
     };
 }

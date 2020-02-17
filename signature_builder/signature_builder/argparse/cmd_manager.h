@@ -64,7 +64,7 @@ namespace builder::argparse
     public:
         explicit FileNotFound(const std::string& filename);
 
-        [[nodiscard]] const char* what() const noexcept override final;
+        [[nodiscard]] const char *what() const noexcept override final;
 
     };
 
@@ -77,6 +77,6 @@ namespace builder::argparse
     public:
         explicit MissingEssentialOptions(const po::options_description& description);
 
-        [[nodiscard]] const char* what() const noexcept override final;
+        [[nodiscard]] const char *what() const noexcept override final;
     };
 }

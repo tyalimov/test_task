@@ -11,12 +11,8 @@ namespace builder::crypto
         Sha512Finalise(&m_context, &m_digest);
     }
 
-    std::vector<uint8_t> HashMaker::getHash() const noexcept
+    Digest HashMaker::getHash() const noexcept
     {
-        return std::vector<uint8_t>
-        (
-            m_digest.bytes, 
-            m_digest.bytes + sizeof(m_digest.bytes)
-        );
+        return Digest(m_digest.bytes, m_digest.bytes + sizeof(m_digest.bytes));
     }
 }

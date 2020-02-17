@@ -9,6 +9,7 @@ namespace builder::filesys
         , m_blocks_count(utils::AlignGreater(m_file_size, block_size))
         , m_page_size(bip::mapped_region::get_page_size())
         , m_file_ptr(nullptr)
+        , m_file_name(file_name)
         , m_file_mapping(file_name.generic_string().c_str(), bip::read_write)
     {}
 
@@ -75,14 +76,14 @@ namespace builder::filesys
     {
         if (!m_file_ptr)
         {
-            throw FileNotMapped();
+            throw FileNotMapped(m_file_name.generic_string());
         }
 
         uint64_t requested_offser = m_block_size * block_id;
 
         if (!m_current_range.offsetSatisfies(requested_offser))
         {
-            throw BlockOutOfRange();
+            throw BlockOutOfRange(block_id, m_current_range.getLimit());
         }
 
         uint64_t offset_from_nearest_page = requested_offser % m_page_size;
@@ -99,13 +100,32 @@ namespace builder::filesys
         return m_file_ptr + block_id * m_block_size;
     }
 
-    const char *FileNotMapped::what() const
+    FileNotMapped::FileNotMapped(const std::string &filename)
+        : m_message("Error mapping file - [")
     {
-        return "The file is not mapped yet";
+        m_message += filename;
+        m_message += "]";
     }
 
-    const char *BlockOutOfRange::what() const
+    const char *FileNotMapped::what() const noexcept
     {
-        return "Block number out of range";
+        return m_message.c_str();
+    }
+
+    BlockOutOfRange::BlockOutOfRange(uint64_t block, uint64_t limit)
+        : m_message("Try to get block out of range ")
+    {
+        std::stringstream ss;
+
+        ss << "[" << block << "]";
+        ss << " out of ";
+        ss << "[" << limit << "]";
+
+        m_message += ss.str();
+    }
+
+    const char *BlockOutOfRange::what() const noexcept
+    {
+        return m_message.c_str();
     }
 }

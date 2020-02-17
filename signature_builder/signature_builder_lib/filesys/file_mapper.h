@@ -43,6 +43,11 @@ namespace builder::filesys
         {
             return offset >= m_start && offset <= m_end;
         }
+
+        [[nodiscard]] uint64_t getLimit() const noexcept
+        {
+            return m_end;
+        }
     };
 
     class FileMapper
@@ -54,6 +59,7 @@ namespace builder::filesys
         uint64_t           m_page_size;
         uint8_t           *m_file_ptr;
 
+        utils::Path                         m_file_name;
         bip::file_mapping                   m_file_mapping;
         std::unique_ptr<bip::mapped_region> m_mapped_region;
         MappingRange                        m_current_range;
@@ -75,15 +81,25 @@ namespace builder::filesys
     class FileNotMapped final
         : public std::exception
     {
+    private:
+        mutable std::string m_message;
+
     public:
-        [[nodiscard]] const char *what() const override final;
+        explicit FileNotMapped(const std::string& filename);
+
+        [[nodiscard]] const char *what() const noexcept override final;
     };
 
     class BlockOutOfRange final
         : public std::exception
     {
+    private:
+        mutable std::string m_message;
+
     public:
-        [[nodiscard]] const char *what() const override final;
+        explicit BlockOutOfRange(uint64_t block, uint64_t limit);
+
+        [[nodiscard]] const char *what() const noexcept override final;
     };
 
 }

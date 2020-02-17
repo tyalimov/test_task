@@ -8,7 +8,7 @@ namespace builder::filesys
     {
         if (!m_file.is_open())
         {
-            throw FileNotOpened();
+            throw FileNotOpened(m_file_name.generic_string());
         }
     }
 
@@ -40,14 +40,22 @@ namespace builder::filesys
     OutputFileFormatter::OutputFileFormatter(const utils::Path& file_name, uint64_t hash_blocks_count)
         : m_file(file_name.generic_string(), std::fstream::out | std::fstream::binary | std::fstream::trunc)
         , m_file_size(hash_blocks_count * utils::constants::kDigestSize)
+        , m_file_name(file_name)
 
     {
         checkFileOpening();
         fillWithZeros();
     }
 
-    const char * FileNotOpened::what() const noexcept
+    FileNotOpened::FileNotOpened(const std::string &filename)
+        : m_message("Error while opening file - [")
     {
-        return "Output file was not opened";
+        m_message += filename;
+        m_message += "]";
+    }
+
+    const char *FileNotOpened::what() const noexcept
+    {
+        return m_message.c_str();
     }
 }
