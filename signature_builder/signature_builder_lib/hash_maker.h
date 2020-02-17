@@ -5,6 +5,8 @@
 
 namespace builder::crypto
 {
+    using Digest = std::vector<uint8_t>;
+
     class HashMaker
     {
     private:
@@ -13,6 +15,6 @@ namespace builder::crypto
     public:
         HashMaker(uint8_t *data, uint64_t size);
 
-        [[nodiscard]] SHA512_HASH getHash() const;
+        [[nodiscard]] Digest getHash() const noexcept;
     };
 }
